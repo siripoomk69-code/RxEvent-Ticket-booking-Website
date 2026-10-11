@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ผังที่นั่งโรงภาพยนตร์</title>
+<style>
+:root{--bg:#f3f2ee;--ink:#1d2330;--mut:#6b7280;--seat:#fff;--line:#2a3140;--sel:#0f766e;--selt:#fff;--taken:#c9ccd3;--rm:#e3e1d8;--scr:#1d2330;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171d;--ink:#e8eaee;--mut:#9aa1ad;--seat:#1f2430;--line:#7a8396;--sel:#2dd4bf;--selt:#0b1f1c;--taken:#3a404d;--rm:#242a36;--scr:#e8eaee}}
+:root[data-theme="dark"]{--bg:#14171d;--ink:#e8eaee;--mut:#9aa1ad;--seat:#1f2430;--line:#7a8396;--sel:#2dd4bf;--selt:#0b1f1c;--taken:#3a404d;--rm:#242a36;--scr:#e8eaee}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans Thai","Sarabun",system-ui,sans-serif}
+main{max-width:980px;margin:0 auto;padding:20px 14px 40px}
+h1{font-size:1.4rem;margin:0 0 4px}
+p.sub{margin:0 0 14px;color:var(--mut);font-size:.9rem}
+.wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+svg{display:block;min-width:640px;width:100%;height:auto}
+.seat rect{fill:var(--seat);stroke:var(--line);stroke-width:1.5;transition:fill .12s}
+.seat text{font-size:10px;fill:var(--ink);pointer-events:none;text-anchor:middle}
+.seat{cursor:pointer}
+.seat:hover rect{stroke-width:3}
+.seat:focus{outline:none}.seat:focus-visible rect{stroke-width:3.5;stroke:var(--sel)}
+.seat.sel rect{fill:var(--sel)}.seat.sel text{fill:var(--selt);font-weight:700}
+.seat.taken{cursor:not-allowed}.seat.taken rect{fill:var(--taken);stroke:var(--taken)}.seat.taken text{fill:var(--mut)}
+.rl{font-size:15px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.lbl{font-size:13px;fill:var(--mut);text-anchor:middle}
+.bar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:12px 0;font-size:.88rem}
+.k{display:inline-flex;align-items:center;gap:6px}
+.k i{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--line);background:var(--seat);display:inline-block}
+.k i.s{background:var(--sel);border-color:var(--sel)}.k i.t{background:var(--taken);border-color:var(--taken)}
+.sum{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+#list{font-weight:600}
+button{font:inherit;background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:8px 14px;cursor:pointer}
+</style>
+</head>
+<body>
+<main>
+<h1>ผังที่นั่งโรงภาพยนตร์</h1>
+<p class="sub">แถว A–J แถวละ 24 ที่นั่ง (ฝั่งละ 12) · แถว K–L แถวละ 16 ที่นั่ง (ฝั่งละ 8) · แตะที่นั่งเพื่อเลือก</p>
+<div class="bar">
+<span class="k"><i></i>ว่าง</span><span class="k"><i class="s"></i>ที่เลือก</span><span class="k"><i class="t"></i>ไม่ว่าง</span>
+</div>
+<div class="wrap"><svg id="map" viewBox="0 0 1000 900" role="group" aria-label="ผังที่นั่ง"></svg></div>
+<div class="sum" style="margin-top:12px">
+<div>ที่นั่งที่เลือก: <span id="list">ยังไม่ได้เลือก</span></div>
+<button id="clr">ล้างที่เลือก</button>
+</div>
+</main>
+<script>
+(function(){
+var NS="http://www.w3.org/2000/svg",svg=document.getElementById("map"),R=1500,CX=500,STEP=32;
+function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);(p||svg).appendChild(e);return e}
+var sel=new Set();
+function rnd(i){var x=Math.sin(i*97.13)*10000;return x-Math.floor(x)}
+// ห้องควบคุม (อยู่กลางแถว K–L)
+el("rect",{x:CX-62,y:128,width:124,height:112,rx:6,fill:"var(--rm)",stroke:"var(--line)","stroke-width":2});
+el("text",{x:CX,y:178,class:"lbl"}).textContent="ห้องควบคุม";
+// ทางเดินกลาง
+el("text",{x:CX,y:600,class:"lbl"}).textContent="ทางเดิน";
+// จอภาพ
+el("path",{d:"M300 868 Q500 846 700 868 L700 884 L300 884 Z",fill:"var(--scr)"});
+el("text",{x:CX,y:838,class:"lbl",style:"font-size:16px"}).textContent="จอภาพ";
+var rows="ABCDEFGHIJKL".split(""),n=0;
+rows.forEach(function(L,i){
+ var total=i<10?24:16,half=total/2,gap=i<10?42:70,y0=770-i*52;
+ function pos(dx){return {x:CX+dx,y:y0+dx*dx/(2*R),a:Math.atan(dx/R)*180/Math.PI}}
+ for(var s=1;s<=total;s++){
+  var dx=s<=half?-(gap+(half-s)*STEP+16):(gap+(s-half-1)*STEP+16),p=pos(dx),id=L+s;
+  var taken=rnd(++n)<0.12;
+  var g=el("g",{class:"seat"+(taken?" taken":""),transform:"translate("+p.x.toFixed(1)+" "+p.y.toFixed(1)+") rotate("+p.a.toFixed(2)+")",tabindex:taken?-1:0,role:"button","aria-label":"ที่นั่ง "+id+(taken?" ไม่ว่าง":"")});
+  el("rect",{x:-14,y:-14,width:28,height:28,rx:5},g);
+  el("text",{x:0,y:3.5},g).textContent=s;
+  if(!taken){(function(g,id){function t(){if(sel.has(id)){sel.delete(id);g.classList.remove("sel")}else{sel.add(id);g.classList.add("sel")}up()}
+   g.addEventListener("click",t);g.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();t()}})})(g,id)}
+ }
+ var edge=gap+(half-1)*STEP+16+34;
+ [-edge,edge].forEach(function(dx){var p=pos(dx);el("text",{x:p.x,y:p.y,class:"rl"}).textContent=L});
+});
+function up(){var a=Array.from(sel).sort(function(x,y){return x[0]===y[0]?parseInt(x.slice(1))-parseInt(y.slice(1)):x<y?-1:1});
+ document.getElementById("list").textContent=a.length?a.join(", ")+" ("+a.length+" ที่นั่ง)":"ยังไม่ได้เลือก"}
+document.getElementById("clr").onclick=function(){sel.clear();svg.querySelectorAll(".sel").forEach(function(e){e.classList.remove("sel")});up()};
+})();
+</script>
+</body>
+</html>

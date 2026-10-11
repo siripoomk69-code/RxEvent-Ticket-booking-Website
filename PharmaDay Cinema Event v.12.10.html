@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PharmaDay Cinema Event · จองตั๋วหนัง</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;700&family=Rye&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f1ee;--panel:#fff;--ink:#2a1420;--mute:#7b6670;--line:#e4d8d8;--free:#a8324f;--sel:#e8a317;--sel-ink:#2a1420;--taken:#cfc5c8;--glow:#e8a317;--btn:#a8324f;--btn-ink:#fff;--admin:#3a6b52;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#160b12;--panel:#22111b;--ink:#f6e9e4;--mute:#a58f98;--line:#3a2230;--free:#c2415f;--taken:#3b2a33;--btn:#e8a317;--btn-ink:#2a1420;--admin:#5fae87}}
+:root[data-theme="dark"]{--bg:#160b12;--panel:#22111b;--ink:#f6e9e4;--mute:#a58f98;--line:#3a2230;--free:#c2415f;--taken:#3b2a33;--btn:#e8a317;--btn-ink:#2a1420;--admin:#5fae87}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Prompt','Noto Sans Thai',Tahoma,sans-serif;line-height:1.6}
+main{max-width:980px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:clamp(22px,6vw,40px);margin:0;letter-spacing:-.5px;line-height:1.2;text-wrap:balance;overflow-wrap:break-word}
+h1 b{color:var(--sel)}
+.sub{color:var(--mute);margin:6px 0 0}
+[hidden]{display:none!important}
+.loginwrap{max-width:380px;margin:48px auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px}
+.loginwrap h2{margin:0 0 4px;font-size:22px}
+.field{display:grid;gap:6px;margin-top:16px;min-width:0}
+.field label{font-size:13px;color:var(--mute)}
+.field input{font:500 17px 'Prompt',sans-serif;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);width:100%;min-width:0;max-width:100%}
+.field input:focus-visible{outline:3px solid var(--sel);outline-offset:1px}
+.err{color:var(--free);font-size:13px;min-height:18px;margin-top:8px}
+.hint{color:var(--mute);font-size:12px;margin-top:10px}
+button.primary{width:100%;margin-top:18px;background:var(--btn);color:var(--btn-ink);border:0;border-radius:10px;padding:14px;font:700 16px 'Prompt',sans-serif;cursor:pointer}
+button.primary:disabled{opacity:.5;cursor:not-allowed}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.who{font-size:14px;color:var(--mute)}
+.who b{color:var(--ink)}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;background:var(--admin);color:#fff;margin-left:6px;vertical-align:1px}
+.linkbtn{background:none;border:0;color:var(--mute);text-decoration:underline;font:14px 'Prompt',sans-serif;cursor:pointer}
+.backbtn{border:1px solid var(--line);border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:700;letter-spacing:.5px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.backbtn:hover{filter:brightness(1.08);background:var(--panel)}
+#topRightBar{position:fixed;top:12px;right:12px;z-index:30;display:flex;gap:8px;align-items:center}
+.toppill{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:7px 14px;font:700 13px 'Prompt',sans-serif;letter-spacing:.5px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);white-space:nowrap}
+.toppill:hover{filter:brightness(1.08)}
+#guestLogin{background:var(--btn);color:var(--btn-ink);border-color:var(--btn)}
+.tabs{display:flex;gap:8px;margin:18px 0 4px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:10px 16px;font:500 14px 'Prompt',sans-serif;cursor:pointer}
+.tab.active{background:var(--sel);border-color:var(--sel);color:var(--sel-ink);font-weight:700}
+.seatWrap{overflow-x:auto;padding:12px 0 8px;-webkit-overflow-scrolling:touch}
+.seatWrap svg{display:block;min-width:560px;width:100%;height:auto;margin:0 auto;transition:width .15s ease}
+.zoomControls{display:flex;justify-content:center;gap:10px;margin-top:4px}
+.zoomBtn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:700 18px 'Prompt',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.zoomBtn:hover{filter:brightness(1.08)}
+.seat rect{fill:var(--free);stroke:var(--line);stroke-width:1.5;transition:fill .12s}
+.seat text{font-size:11px;fill:#fff;font-weight:600;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.seat{cursor:pointer}
+.seat:hover rect{stroke-width:3}
+.seat:focus{outline:none}
+.seat:focus-visible rect{stroke-width:3.5;stroke:var(--ink)}
+.seat.sel rect{fill:var(--sel)}
+.seat.sel text{fill:var(--sel-ink);font-weight:700}
+#grid .seat.taken{cursor:not-allowed;pointer-events:none}
+.seat.taken rect{fill:var(--taken);stroke:var(--taken)}
+.seat.taken text{fill:var(--mute)}
+.svgRoom{fill:var(--panel);stroke:var(--line);stroke-width:2}
+.svgLbl{font-size:13px;fill:var(--mute);text-anchor:middle}
+.svgScreen{fill:var(--glow)}
+.svgRowLabel{font-size:15px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.legend{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;font-size:14px;color:var(--mute);margin:8px 0 20px}
+.legend i{display:inline-block;width:16px;height:14px;border-radius:5px 5px 2px 2px;vertical-align:-2px;margin-right:6px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:10px}
+.line{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.line span:first-child{color:var(--mute)}
+.total{font-size:26px;font-weight:700}
+button.book{background:var(--btn);color:var(--btn-ink);border:0;border-radius:10px;padding:14px;font:700 17px 'Prompt',sans-serif;cursor:pointer}
+button.book:disabled{opacity:.4;cursor:not-allowed}
+.ticket{margin-top:20px;border:2px dashed var(--sel);border-radius:14px;padding:22px;text-align:center;background:var(--panel)}
+.code{font-size:clamp(34px,9vw,56px);font-weight:700;color:var(--sel);letter-spacing:1px;line-height:1.2}
+.ticket p{margin:4px 0;color:var(--mute)}
+.ticket strong{color:var(--ink)}
+.section-title{font-weight:700;margin:28px 0 10px;font-size:18px}
+.mine{display:grid;gap:10px;grid-template-columns:1fr}
+img{max-width:100%;height:auto}
+/* ---- Responsive breakpoints ---- */
+@media (max-width:767px){
+  h1{font-size:24px}
+  .mini{padding:10px 16px}
+  .modalbtns{gap:12px}
+  .adminbar{gap:14px}
+  button.primary{padding:16px}
+  .tab{padding:12px 14px}
+  .seat{min-height:28px}
+}
+@media (min-width:768px) and (max-width:1024px){
+  .mine{grid-template-columns:1fr 1fr}
+  .movies{grid-template-columns:repeat(2,1fr)}
+}
+@media (min-width:1025px){
+  main{max-width:1180px;padding:40px 32px 64px}
+  .mine{grid-template-columns:repeat(3,1fr)}
+}
+
+/* ---- Admin navigation: sidebar (desktop) / hamburger (mobile+tablet) ---- */
+.adminLayout{display:block}
+.adminMain{min-width:0}
+.hamburgerBtn{display:none;width:100%;align-items:center;justify-content:space-between;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;color:var(--ink);font:600 14px 'Prompt',sans-serif;cursor:pointer;margin-bottom:10px}
+.hamburgerIcon{display:inline-flex;flex-direction:column;gap:3px;width:20px}
+.hamburgerIcon span{display:block;height:2px;background:var(--ink);border-radius:2px}
+.adminNavList{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
+.adminNavList a{display:block;padding:9px 12px;border-radius:8px;color:var(--mute);text-decoration:none;font-size:14px;font-weight:600}
+.adminNavList a:hover{background:var(--bg);color:var(--ink)}
+@media (max-width:1024px){
+  .hamburgerBtn{display:flex}
+  .adminNavList{display:none;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px;margin-bottom:18px}
+  .adminNavList.open{display:flex}
+}
+@media (min-width:1025px){
+  .adminLayout{display:flex;gap:32px;align-items:flex-start}
+  .adminNav{position:sticky;top:16px;width:220px;flex:0 0 220px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .adminMain{flex:1}
+}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.card .meta{font-size:13px;color:var(--mute)}
+.card .code2{font-weight:700;color:var(--sel)}
+.mini{border:1px solid var(--line);background:none;color:var(--ink);border-radius:8px;padding:7px 12px;font:500 13px 'Prompt',sans-serif;cursor:pointer}
+.mini.danger{color:var(--free);border-color:var(--free)}
+.empty{color:var(--mute);font-size:14px}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
+th{color:var(--mute);font-weight:500;font-size:12px;text-transform:uppercase}
+tr:last-child td{border-bottom:0}
+.tools{display:flex;gap:6px;flex-wrap:wrap}
+.adminbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:28px 0 10px}
+.overlay{position:fixed;inset:0;background:#0006;display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}
+.modal{background:var(--panel);border-radius:14px;padding:22px;max-width:360px;width:100%;display:grid;gap:12px}
+.modal h3{margin:0}
+.modalbtns{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+.modalbtns button{border-radius:8px;padding:9px 16px;font:500 14px 'Prompt',sans-serif;cursor:pointer}
+.modalbtns .save{background:var(--btn);color:var(--btn-ink);border:0}
+.modalbtns .cancel{background:none;border:1px solid var(--line);color:var(--ink)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,12px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:10px;font-size:14px;opacity:0;transition:opacity .25s,transform .25s;z-index:20;max-width:90vw;text-align:center}
+.poster{display:flex;flex-direction:row;align-items:stretch;border:2px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;background:var(--panel);padding:0;text-align:left;font-family:inherit}
+.poster .art{aspect-ratio:2/3;width:130px;flex:0 0 130px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:44px;line-height:1;font-weight:700;overflow:hidden;text-align:center;padding:6px}
+.poster .art img{width:100%;height:100%;object-fit:cover;display:block}
+.poster .cap{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:14px 18px}
+.poster .cap b{display:block;font-size:16px;overflow-wrap:break-word;color:#fff}
+.poster .cap span{font-size:12px;color:var(--mute)}
+.poster:hover{filter:brightness(1.05)}
+.poster:focus-visible{outline:3px solid var(--sel);outline-offset:2px}
+.movies{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:18px}
+#movieGrid{display:flex;flex-direction:column;gap:14px;margin-top:18px}
+@media (max-width:420px){
+  .poster .art{width:90px;flex:0 0 90px;font-size:30px}
+}
+.posterPreview{aspect-ratio:2/3;width:120px;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(135deg,var(--sel),var(--btn));display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px;line-height:1;font-weight:700;text-align:center;padding:6px}
+.bookingPoster{aspect-ratio:2/3;max-width:200px;margin:0 auto 14px;border-radius:14px;overflow:hidden;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:#fff;font-size:44px;line-height:1;font-weight:700;text-align:center;padding:6px}
+.bookingPoster:empty{display:none}
+.bookingPoster img{width:100%;height:100%;object-fit:cover;display:block}
+.posterPreview img{width:100%;height:100%;object-fit:cover;display:block}
+.ticketCard{position:relative;overflow:hidden;text-align:center}
+.ticketCard .icon{font-size:56px;animation:ticketPop .6s cubic-bezier(.34,1.56,.64,1)}
+.ticketCard .pcode{font-size:clamp(30px,8vw,46px);font-weight:700;color:var(--sel);letter-spacing:1px;margin:2px 0}
+.ticketCard .thanks{font-size:13px;color:var(--mute);border-top:1px dashed var(--line);padding-top:14px;margin-top:12px;line-height:1.7;text-align:left}
+.pickupNote{font-size:13px;background:color-mix(in srgb,var(--sel) 16%,transparent);border:1px solid var(--sel);border-radius:10px;padding:10px 12px;margin:10px 0 0;text-align:left;line-height:1.6}
+.paySection{border-top:1px dashed var(--line);margin-top:14px;padding-top:14px}
+.qrImg{display:block;width:100%;max-width:220px;margin:10px auto 0;border-radius:10px;border:1px solid var(--line)}
+.slipThumb{display:block;width:100%;max-width:160px;margin:8px auto 0;border-radius:10px;border:1px solid var(--line)}
+.waitNote{font-size:13px;background:color-mix(in srgb,var(--free) 16%,transparent);border:1px solid var(--free);border-radius:10px;padding:10px 12px;margin:10px 0 0;text-align:left;line-height:1.6}
+.statusVerified{font-size:13px;background:color-mix(in srgb,var(--sel) 16%,transparent);border:1px solid var(--sel);border-radius:10px;padding:10px 12px;margin:10px 0 0;text-align:left;line-height:1.6}
+.statusProblem{font-size:13px;background:rgba(220,60,60,.14);border:1px solid #d94545;border-radius:10px;padding:10px 12px;margin:10px 0 0;text-align:left;line-height:1.6}
+.statusProblem a{color:#d94545;font-weight:700;text-decoration:underline}
+.confettiHost{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.confettiHost span{position:absolute;top:-14px;width:7px;height:12px;border-radius:2px;animation:confettiFall 1.2s ease-in forwards}
+@keyframes ticketPop{0%{transform:scale(.4) rotate(-12deg);opacity:0}55%{transform:scale(1.1) rotate(4deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(220px) rotate(260deg);opacity:0}}
+.movieForm{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:16px;display:grid;gap:10px;min-width:0;overflow-wrap:break-word}
+.movieForm .field input{padding:10px 12px}
+.movieForm input[type="file"]{width:100%;max-width:100%}
+.movieForm .save{margin-top:2px}
+
+/* ---- Halloween theme (user-facing pages) ---- */
+body.halloween{
+  --bg:#150a1e;--panel:#20132c;--ink:#f4ead9;--mute:#ac98bf;--line:#3d2850;
+  --free:#ff7518;--sel:#7be495;--sel-ink:#12210f;--taken:#463154;--glow:#7be495;
+  --btn:#ff7518;--btn-ink:#1a0d05;--admin:#b47bff;
+  background:radial-gradient(ellipse 900px 500px at 50% -10%,#2b1a3d 0%,#150a1e 55%) fixed,var(--bg);
+}
+body.halloween h1 b{color:var(--sel);text-shadow:0 0 14px color-mix(in srgb,var(--sel) 55%,transparent)}
+body.halloween h1::after{content:'🎃';margin-left:8px;display:inline-block;filter:drop-shadow(0 0 6px color-mix(in srgb,var(--free) 70%,transparent))}
+body.halloween .loginwrap{position:relative;overflow:hidden}
+body.halloween .loginwrap::before{content:'🕸️';position:absolute;top:-10px;right:-10px;font-size:56px;opacity:.14;pointer-events:none;transform:rotate(8deg)}
+body.halloween .poster{border-color:var(--line)}
+body.halloween .poster.active{outline:3px solid var(--sel);outline-offset:2px}
+body.halloween #introModal h3::before{content:'👻 '}
+
+/* ---- Vintage poster layer (still Halloween palette, user-facing only) ---- */
+body.halloween{
+  background:
+    radial-gradient(ellipse 900px 500px at 50% -10%,#2b1a3d 0%,#150a1e 55%) fixed,
+    repeating-radial-gradient(circle at 0 0,transparent 0,transparent 3px,rgba(244,234,217,.03) 3px,rgba(244,234,217,.03) 4px) fixed,
+    var(--bg);
+}
+body.halloween h1,body.halloween .splashTitle,body.halloween .section-title,body.halloween .modal h3,body.halloween .poster .cap b{
+  font-family:'Rye','Prompt','Noto Sans Thai',sans-serif;
+}
+body.halloween .section-title{letter-spacing:1px;position:relative;padding-bottom:8px}
+body.halloween .section-title::after{content:'';display:block;width:56px;height:2px;background:linear-gradient(90deg,var(--free),var(--sel));margin-top:8px;border-radius:2px}
+body.halloween button.primary,body.halloween .save,body.halloween .mini{font-family:'Rye','Prompt','Noto Sans Thai',sans-serif;letter-spacing:.5px}
+body.halloween button.primary,body.halloween .save{box-shadow:inset 0 0 0 2px rgba(0,0,0,.22),0 2px 0 rgba(0,0,0,.3)}
+body.halloween .loginwrap,body.halloween .modal{position:relative}
+body.halloween .loginwrap::after,body.halloween .modal::after{content:'';position:absolute;inset:6px;border:1px solid color-mix(in srgb,var(--sel) 40%,transparent);border-radius:10px;pointer-events:none}
+body.halloween .poster,body.halloween .bookingPoster,body.halloween .movieForm,body.halloween .posterPreview{box-shadow:0 0 0 1px color-mix(in srgb,var(--sel) 35%,transparent) inset}
+body.halloween th,body.halloween .badge{font-family:'Rye','Prompt','Noto Sans Thai',sans-serif;letter-spacing:.5px}
+body.halloween table{box-shadow:0 0 0 1px color-mix(in srgb,var(--sel) 30%,transparent) inset}
+body.halloween .tab{font-family:'Rye','Prompt','Noto Sans Thai',sans-serif;letter-spacing:.5px}
+body.halloween .ticketCard{padding-top:20px}
+body.halloween .ticketCard .icon{display:inline-flex;align-items:center;justify-content:center;width:60px;height:60px;border-radius:50%;border:2px solid var(--sel);box-shadow:0 0 0 4px var(--bg),0 0 0 6px color-mix(in srgb,var(--line) 80%,transparent);font-size:28px;margin:0 auto}
+body.halloween .ticketCard .pcode{border-top:2px dashed color-mix(in srgb,var(--mute) 55%,transparent);padding-top:14px;margin-top:6px}
+
+.bgDecor{display:none}
+body.halloween .bgDecor{display:block;position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 0 10px rgba(0,0,0,.35));animation:bgFloat 7s ease-in-out infinite}
+@keyframes bgFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-14px) rotate(3deg)}}
+@media (prefers-reduced-motion:reduce){body.halloween .bgDecor span{animation:none}}
+
+.overlay.splash{background:radial-gradient(ellipse 900px 600px at 50% 20%,#2b1a3d 0%,#0d0712 70%);z-index:20;cursor:pointer}
+.splashInner{text-align:center;max-width:640px;padding:0 16px}
+.splashTitle{font-size:clamp(22px,8vw,52px);margin:0 0 10px;letter-spacing:.5px;color:#f4ead9;line-height:1.2;text-wrap:balance;overflow-wrap:break-word}
+.splashTitle span{display:inline-block;opacity:0;transform:translateY(16px) scale(.85);animation:letterIn .55s ease forwards}
+@keyframes letterIn{to{opacity:1;transform:translateY(0) scale(1)}}
+.splashTitle.flicker{animation:neonFlicker 2.2s linear 1}
+@keyframes neonFlicker{
+  0%,19%,21%,23%,54%,56%,100%{opacity:1;text-shadow:0 0 14px rgba(255,117,24,.75),0 0 30px rgba(123,228,149,.4)}
+  20%,22%,55%{opacity:.45;text-shadow:none}
+}
+.splashTag{opacity:0;color:#c8b8d8;font-size:clamp(13px,3.6vw,16px);margin-top:6px;text-wrap:balance;animation:fadeUp .8s ease forwards;animation-delay:1.4s}
+.splashSkip{opacity:0;margin-top:20px;color:#c8b8d8;animation:fadeUp .6s ease forwards;animation-delay:1.8s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){
+  .splashTitle span{animation:none;opacity:1;transform:none}
+  .splashTitle.flicker{animation:none}
+  .splashTag,.splashSkip{animation:none;opacity:1}
+}
+</style>
+</head>
+<body class="halloween">
+<div class="bgDecor" aria-hidden="true">
+  <span style="top:5%;left:3%;font-size:52px;animation-delay:0s">🦇</span>
+  <span style="top:10%;right:5%;font-size:44px;animation-delay:1.2s">🕸️</span>
+  <span style="top:34%;left:1.5%;font-size:58px;animation-delay:.6s">🌙</span>
+  <span style="top:58%;right:3%;font-size:50px;animation-delay:1.8s">🎃</span>
+  <span style="top:76%;left:4%;font-size:42px;animation-delay:.9s">👻</span>
+  <span style="top:90%;right:8%;font-size:38px;animation-delay:2.2s">🕯️</span>
+  <span style="top:22%;left:48%;font-size:36px;animation-delay:1.5s">🎞️</span>
+  <span style="top:68%;left:44%;font-size:40px;animation-delay:.3s">🍿</span>
+  <span style="top:46%;right:1.5%;font-size:40px;animation-delay:2.6s">🦉</span>
+  <span style="top:82%;left:50%;font-size:36px;animation-delay:1s">🪦</span>
+</div>
+<div id="topRightBar">
+  <button id="guestLogin" type="button" class="toppill" data-i18n="guestlogin_btn">เข้าสู่ระบบ</button>
+  <button id="langToggle" type="button" class="toppill" aria-label="Switch language / สลับภาษา">EN</button>
+</div>
+<div class="overlay splash" id="splash">
+  <div class="splashInner">
+    <h1 class="splashTitle" id="splashTitle" aria-label="PharmaDay Cinema Event"></h1>
+    <p class="splashTag" data-i18n="splash_tag">🎬 งานฉายหนังการกุศล เพื่อน้องๆ ผู้พิการซ้ำซ้อน</p>
+    <button class="linkbtn splashSkip" id="splashSkip" type="button" data-i18n="splash_skip">ข้าม ›</button>
+  </div>
+</div>
+<div class="overlay" id="introModal" hidden>
+  <div class="modal" style="max-width:420px">
+    <h3 data-i18n="intro_title">เกี่ยวกับกิจกรรมนี้</h3>
+    <p class="sub" style="margin:0" data-i18n="intro_body">กิจกรรมในครั้งนี้จัดทำโดยนักศึกษาเภสัชศาสตร์ชั้นปีที่ 1 ปีการศึกษา 2569 วิทยาลัยเภสัชศาสตร์ มหาวิทยาลัยรังสิต ซึ่งเป็นส่วนหนึ่งในรายวิชา RSU111 สังคมธรรมาธิปไตย ในโครงการเรียนรู้ชีวิตสู่จิตสำนึกเภสัชกรที่ดี เพื่อช่วยเหลือเด็กพิการซ้ำซ้อน โดยรายได้ทั้งหมดที่ได้รับจากกิจกรรมในครั้งนี้จะนำไปเพื่อช่วยเหลือ เด็กพิการซ้ำซ้อน ในโครงการดังกล่าว</p>
+    <div class="modalbtns"><button class="save" id="introClose" data-i18n="intro_close">รับทราบ เข้าสู่หน้าเว็บ</button></div>
+  </div>
+</div>
+<main>
+  <h1>PharmaDay Cinema <b>Event</b></h1>
+  <p class="sub" id="tagline">ระบบจองตั๋วหนัง</p>
+
+  <div class="loginwrap" id="movieSelect" style="max-width:640px">
+    <h2 data-i18n="movieselect_title">เลือกรอบภาพยนตร์</h2>
+    <p class="sub" style="margin-top:2px" data-i18n="movieselect_sub">แตะโปสเตอร์เพื่อเลือกเรื่องที่ต้องการชม</p>
+    <div class="movies" id="movieGrid"></div>
+  </div>
+
+  <div class="loginwrap" id="login" hidden>
+    <button class="linkbtn backbtn" id="backToMovies" style="margin-bottom:10px" data-i18n="login_back">← กลับไปเลือกภาพยนตร์</button>
+    <div class="tabs" style="margin:0 0 4px">
+      <button class="tab active" id="modeLogin" type="button" data-i18n="tab_login">เข้าสู่ระบบ</button>
+      <button class="tab" id="modeRegister" type="button" data-i18n="tab_register">สร้างบัญชีใหม่</button>
+    </div>
+    <h2 id="authTitle">เข้าสู่ระบบ</h2>
+    <p class="sub" style="margin-top:2px" id="authSub">กรอกชื่อผู้ใช้และรหัสผ่านของบัญชีที่มีอยู่แล้ว</p>
+    <div class="field"><label for="uname" data-i18n="uname_label">ชื่อผู้ใช้</label><input id="uname" autocomplete="username" maxlength="30" placeholder="เช่น สมชาย, ninja99 หรือ ชื่อภาษาไทย"></div>
+    <p class="err" id="engNote" hidden style="color:var(--btn);font-weight:700;margin-top:-2px" data-i18n="engnote">⚠ ชื่อผู้ใช้ต้องเป็นภาษาอังกฤษเท่านั้น (A-Z, ตัวเลข, และ _) ห้ามใช้ภาษาไทยหรืออักขระพิเศษอื่น</p>
+    <div class="field"><label for="upin" id="upinLabel">รหัสผ่าน (ตัวเลข 6 หลัก)</label><input id="upin" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" placeholder="••••••"></div>
+    <div class="field" id="confirmField" hidden><label for="upin2" data-i18n="upin2_label">ยืนยันรหัสผ่านอีกครั้ง</label><input id="upin2" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" placeholder="••••••"></div>
+    <div class="err" id="loginErr"></div>
+    <button class="primary" id="loginBtn">เข้าสู่ระบบ</button>
+    <p class="hint" id="dbstate"></p>
+  </div>
+
+  <div id="app" hidden>
+    <div class="topbar" id="topbar">
+      <span class="who"><span data-i18n="who_hello">สวัสดี </span><b id="whoName"></b><span class="badge" id="roleBadge" hidden data-i18n="badge_staff">เจ้าหน้าที่</span></span>
+      <button class="linkbtn" id="logout" data-i18n="logout">ออกจากระบบ</button>
+    </div>
+
+    <div id="userView">
+      <button class="linkbtn backbtn" id="backToMoviesFromSeats" style="margin-bottom:10px" data-i18n="login_back">← กลับไปเลือกภาพยนตร์</button>
+      <div class="bookingPoster" id="bookingPoster"></div>
+      <div class="field" style="max-width:420px;margin:0 auto 4px">
+        <label for="showSwitch" data-i18n="showswitch_label">กำลังจองที่นั่งสำหรับรอบ</label>
+        <select id="showSwitch" style="font:500 16px 'Prompt',sans-serif;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)"></select>
+      </div>
+      <div class="seatWrap" id="hall"><svg id="grid" viewBox="0 0 1000 900" role="group" aria-label="ผังที่นั่ง"></svg></div>
+      <div class="zoomControls">
+        <button type="button" class="zoomBtn" id="zoomOut" aria-label="Zoom out">−</button>
+        <button type="button" class="zoomBtn" id="zoomReset" aria-label="Fit to screen">⤢</button>
+        <button type="button" class="zoomBtn" id="zoomIn" aria-label="Zoom in">+</button>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--free)"></i><span data-i18n="legend_free">ว่าง</span></span>
+        <span><i style="background:var(--sel)"></i><span data-i18n="legend_sel">ที่คุณเลือก</span></span>
+        <span><i style="background:var(--taken)"></i><span data-i18n="legend_taken">ถูกจองแล้ว</span></span>
+      </div>
+      <p class="sub" style="text-align:center" id="seatsSummary"></p>
+
+      <section class="panel" aria-live="polite">
+        <div class="line"><span data-i18n="panel_seats_label">ที่นั่งที่เลือก</span><span id="seats">ยังไม่ได้เลือก</span></div>
+        <div class="line"><span data-i18n="panel_count_label">จำนวน</span><span id="count">0 ที่นั่ง</span></div>
+        <div class="line"><span data-i18n="panel_total_label">ราคารวม</span><span class="total" id="total">0 บาท</span></div>
+        <button class="book" id="book" disabled data-i18n="book_btn">จองที่นั่ง</button>
+      </section>
+
+      <div class="section-title" data-i18n="mybookings_title">การจองของฉัน</div>
+      <div class="mine" id="mine"></div>
+    </div>
+
+    <div id="adminView" hidden>
+      <div class="adminLayout">
+        <nav class="adminNav">
+          <button class="hamburgerBtn" id="adminNavToggle" type="button" aria-expanded="false" aria-controls="adminNavList">
+            <span class="hamburgerIcon"><span></span><span></span><span></span></span>
+            <span data-i18n="admin_nav_label">เมนูจัดการ</span>
+          </button>
+          <ul class="adminNavList" id="adminNavList">
+            <li><a href="#sec-users" data-i18n="admin_users_title">บัญชีผู้ใช้ทั้งหมด</a></li>
+            <li><a href="#sec-movies" data-i18n="admin_movies_title">จัดการรอบภาพยนตร์</a></li>
+            <li><a href="#sec-payment" data-i18n="admin_payment_title">ช่องทางการชำระเงิน</a></li>
+            <li><a href="#sec-seatedit" data-i18n="admin_seatedit_title">จัดการที่นั่งรายรอบ</a></li>
+            <li><a href="#sec-byshow" data-i18n="admin_byshow_title">สรุปการจองแยกตามรอบฉาย</a></li>
+            <li><a href="#sec-bookings" data-i18n="admin_bookings_title">รายการจองทั้งหมด</a></li>
+          </ul>
+        </nav>
+        <div class="adminMain">
+          <div class="section-title" id="sec-users" style="margin-top:4px" data-i18n="admin_users_title">บัญชีผู้ใช้ทั้งหมด</div>
+          <p class="sub" style="margin-top:-4px" data-i18n="admin_users_sub">รายชื่อผู้ใช้ รหัสผ่าน และจำนวนการจองของแต่ละคน (ประวัติการจองแบบละเอียดดูได้ในตารางด้านล่าง)</p>
+          <table>
+            <thead><tr><th data-i18n="th_username">ชื่อผู้ใช้</th><th data-i18n="th_password">รหัสผ่าน</th><th data-i18n="th_signup">สมัครเมื่อ</th><th data-i18n="th_bookingcount">จำนวนการจอง</th><th></th></tr></thead>
+            <tbody id="userRows"></tbody>
+          </table>
+          <p class="empty" id="userEmpty" hidden data-i18n="userempty">ยังไม่มีผู้ใช้สมัครสมาชิก</p>
+
+          <div class="section-title" id="sec-movies" data-i18n="admin_movies_title">จัดการรอบภาพยนตร์</div>
+          <p class="sub" style="margin-top:-4px" data-i18n="admin_movies_sub">แก้ไขชื่อเรื่อง วันที่ฉาย เวลาฉาย และรูปโปสเตอร์ของแต่ละรอบ (รูปที่อัปโหลดจะถูกปรับขนาดเป็นสัดส่วน 2:3 โดยอัตโนมัติ) — เพิ่มหรือลบรอบฉายได้ตามต้องการ</p>
+          <div class="movies" id="movieForms"></div>
+          <button class="mini" id="addMovie" type="button" style="margin-top:12px" data-i18n="addmovie_btn">+ เพิ่มรอบฉายใหม่</button>
+
+          <div class="section-title" id="sec-payment" data-i18n="admin_payment_title">ช่องทางการชำระเงิน</div>
+          <p class="sub" style="margin-top:-4px" data-i18n="admin_payment_sub">อัปโหลดรูปภาพช่องทางการชำระเงิน (เช่น QR PromptPay) รูปจะถูกปรับเป็นสัดส่วน 2:3 โดยอัตโนมัติ และจะแสดงในหน้าชำระเงินของผู้จองทันที</p>
+          <div class="posterPreview" id="paymentPreview" style="width:150px"></div>
+          <div class="field" style="max-width:280px">
+            <label for="paymentQrInput" data-i18n="admin_payment_upload_label">อัปโหลดรูปใหม่</label>
+            <input type="file" accept="image/*" id="paymentQrInput">
+          </div>
+          <div class="err" id="paymentQrErr"></div>
+
+          <div class="section-title" id="sec-seatedit" data-i18n="admin_seatedit_title">จัดการที่นั่งรายรอบ</div>
+          <p class="sub" style="margin-top:-4px" data-i18n="admin_seatedit_sub">คลิกที่นั่งว่างเพื่อเพิ่มการจองโดยเจ้าหน้าที่ หรือคลิกที่นั่งที่จองแล้วเพื่อยกเลิก</p>
+          <div class="field" style="max-width:420px">
+            <label for="adminShowSwitch" data-i18n="admin_seatedit_show_label">เลือกรอบฉาย</label>
+            <select id="adminShowSwitch" style="font:500 16px 'Prompt',sans-serif;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)"></select>
+          </div>
+          <div class="seatWrap" id="adminHall"><svg id="adminGrid" viewBox="0 0 1000 900" role="group" aria-label="ผังที่นั่ง (แอดมิน)"></svg></div>
+          <div class="zoomControls">
+            <button type="button" class="zoomBtn" id="adminZoomOut" aria-label="Zoom out">−</button>
+            <button type="button" class="zoomBtn" id="adminZoomReset" aria-label="Fit to screen">⤢</button>
+            <button type="button" class="zoomBtn" id="adminZoomIn" aria-label="Zoom in">+</button>
+          </div>
+          <p class="sub" style="text-align:center" id="adminSeatSummary"></p>
+          <div class="adminbar">
+            <p class="sub" style="margin:0" id="adminSelSummary"></p>
+            <button class="mini" id="adminBookSeats" disabled data-i18n="admin_book_staff_btn">เพิ่มการจองโดยเจ้าหน้าที่</button>
+          </div>
+
+          <div class="section-title" id="sec-byshow" data-i18n="admin_byshow_title">สรุปการจองแยกตามรอบฉาย</div>
+          <p class="sub" style="margin-top:-4px" data-i18n="admin_byshow_sub">จำนวนที่นั่งที่ถูกจอง จำนวนรายการจอง และรายชื่อที่นั่งของแต่ละรอบ</p>
+          <table>
+            <thead><tr><th data-i18n="th_show">รอบ</th><th data-i18n="th_seatsbooked">ที่นั่งที่จองแล้ว</th><th data-i18n="th_bookingcount2">จำนวนรายการจอง</th><th data-i18n="th_seatlist">รายชื่อที่นั่ง</th></tr></thead>
+            <tbody id="byShowRows"></tbody>
+          </table>
+          <p class="empty" id="byShowEmpty" hidden data-i18n="byshowempty">ยังไม่มีรอบฉาย</p>
+
+          <div class="section-title" id="sec-bookings" data-i18n="admin_bookings_title">รายการจองทั้งหมด</div>
+          <div class="adminbar">
+            <p class="sub" style="margin:0" id="adminSummary"></p>
+            <button class="mini danger" id="clearAll" data-i18n="clearall_btn">ล้างข้อมูลการจองทั้งหมด</button>
+          </div>
+          <table>
+            <thead><tr><th data-i18n="th_code">รหัส</th><th data-i18n="th_show">รอบ</th><th data-i18n="th_booker">ผู้จอง</th><th data-i18n="th_seats">ที่นั่ง</th><th data-i18n="th_amount">ยอด</th><th data-i18n="th_bookedat">วันเวลาที่จอง</th><th data-i18n="th_slip">สลิป</th><th data-i18n="th_paystatus">สถานะการชำระเงิน</th><th></th></tr></thead>
+            <tbody id="adminRows"></tbody>
+          </table>
+          <p class="empty" id="adminEmpty" hidden data-i18n="adminempty">ยังไม่มีการจอง</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="overlay" id="ticketPopup" hidden aria-live="polite">
+  <div class="modal ticketCard">
+    <div class="confettiHost" id="confettiHost"></div>
+
+    <div id="ticketView1">
+      <div class="icon">🎟️</div>
+      <p style="margin:2px 0 0;font-weight:700;color:var(--ink)" data-i18n="booking_pending_title">เกือบเสร็จแล้ว! กรุณาชำระเงินเพื่อยืนยันการจอง</p>
+      <p id="pShow" class="sub" style="margin:8px 0 0"></p>
+      <p class="sub" style="margin:0"><span data-i18n="ticket_seats_prefix">ที่นั่ง </span><strong id="pSeats" style="color:var(--ink)"></strong></p>
+      <p class="sub" style="margin:0"><span data-i18n="ticket_total_prefix">ยอดชำระ </span><strong id="pTotal" style="color:var(--ink)"></strong></p>
+      <p class="waitNote" data-i18n="booking_pending_note">ที่นั่งของท่านจะยังไม่ถูกบันทึกจนกว่าจะชำระเงินและอัปโหลดสลิปสำเร็จ หากยังไม่ชำระเงิน จะถือว่าการจองนี้ยังไม่สำเร็จ</p>
+      <div class="modalbtns" style="justify-content:center">
+        <button type="button" class="save" id="goPay" data-i18n="pay_go_btn">ชำระเงิน</button>
+        <button class="linkbtn" id="ticketClose" data-i18n="close_btn">ปิด</button>
+      </div>
+    </div>
+
+    <div id="ticketViewPay" hidden>
+      <div class="icon">💳</div>
+      <p style="margin:2px 0 0;font-weight:700;color:var(--ink)" data-i18n="pay_title">ชำระเงินผ่าน PromptPay</p>
+      <p class="sub" style="margin:2px 0 0"><span data-i18n="pay_amount_prefix">ยอดที่ต้องชำระ </span><strong id="payAmount" style="color:var(--ink)"></strong></p>
+      <img class="qrImg" id="qrImgPay" src="/_blob/9460d08263e9ca75723896305ecce297" alt="PromptPay QR">
+      <div id="ticketSlipStatus1"></div>
+      <button type="button" class="mini" id="goUploadSlip" style="margin-top:12px" data-i18n="pay_upload_btn">อัปโหลดสลิปการโอนเงิน</button>
+      <div class="modalbtns" style="justify-content:center"><button type="button" class="linkbtn backbtn" id="payBack" data-i18n="back_btn">← ย้อนกลับ</button></div>
+    </div>
+
+    <div id="ticketView2" hidden>
+      <div class="icon">📎</div>
+      <p style="margin:2px 0 0;font-weight:700;color:var(--ink)" data-i18n="pay_upload_title">อัปโหลดสลิปการโอนเงิน</p>
+      <img class="qrImg" id="qrImgUpload" src="/_blob/9460d08263e9ca75723896305ecce297" alt="PromptPay QR">
+      <p class="sub" style="margin:8px 0 0"><span data-i18n="pay_amount_prefix">ยอดที่ต้องชำระ </span><strong id="payAmount2" style="color:var(--ink)"></strong></p>
+      <div class="field" style="max-width:280px;margin:10px auto 0;text-align:left">
+        <label for="slipInput" data-i18n="pay_slip_label">อัปโหลดสลิปการโอนเงิน</label>
+        <input type="file" accept="image/*" id="slipInput">
+      </div>
+      <div class="err" id="slipErr"></div>
+      <div class="modalbtns" style="justify-content:center"><button type="button" class="linkbtn backbtn" id="slipCancel" data-i18n="cancel_upload_btn">← ยกเลิกการอัปโหลด</button></div>
+    </div>
+
+    <div id="ticketView3" hidden>
+      <div class="icon">🎟️</div>
+      <p style="margin:2px 0 0" data-i18n="ticket_success">จองสำเร็จ! ได้รับตั๋วหนังแล้ว</p>
+      <div class="pcode" id="pCode3" style="font-size:clamp(20px,6vw,28px)"></div>
+      <p style="margin:10px 0 0;font-weight:700;color:var(--ink)" data-i18n="pay_status_title">สถานะการชำระเงิน</p>
+      <div id="payStatusText3"></div>
+      <p class="pickupNote" id="pPickup3"></p>
+      <p class="thanks" data-i18n="ticket_thanks">ขอขอบคุณสำหรับการสนับสนุน รายได้ที่ได้จากกิจกรรมในครั้งนี้จะนำไปช่วยเหลือเด็กพิการซ้ำซ้อน ในโครงการเรียนรู้ชีวิตสู่จิตสำนึกเภสัชกรที่ดี</p>
+      <div class="modalbtns" style="justify-content:center"><button class="save" id="ticketClose2" data-i18n="close_btn">ปิด</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="modal">
+    <h3><span data-i18n="edit_modal_title">แก้ไขการจอง </span><span id="editCode"></span></h3>
+    <div class="field"><label for="editSeats" data-i18n="edit_seats_label">ที่นั่ง (คั่นด้วยจุลภาค เช่น A1,A2,B5)</label><input id="editSeats"></div>
+    <div class="field"><label for="editShow" data-i18n="edit_show_label">รอบฉาย</label>
+      <select id="editShow" style="font:500 16px 'Prompt',sans-serif;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)"></select>
+    </div>
+    <div class="err" id="editErr"></div>
+    <div class="modalbtns">
+      <button class="cancel" id="editCancel" data-i18n="edit_cancel">ยกเลิก</button>
+      <button class="save" id="editSave" data-i18n="edit_save">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ROW_DEF=[['A',24],['B',24],['C',24],['D',24],['E',24],['F',24],['G',24],['H',24],['I',24],['J',24],['K',16],['L',16]];
+const ROWS=ROW_DEF.map(r=>r[0]);
+const TOTAL_SEATS=ROW_DEF.reduce((s,r)=>s+r[1],0);
+const PRICE=29;
+function rowSeatCount(label){const d=ROW_DEF.find(r=>r[0]===label);return d?d[1]:0}
+function isValidSeatId(id){
+  const m=/^([A-L])(\d{1,2})$/.exec(id);
+  if(!m)return false;
+  const n=+m[2];
+  return n>=1&&n<=rowSeatCount(m[1]);
+}
+const DEFAULT_DATE='2026-10-30';
+let SHOWS=[];
+const GRADIENTS=[['var(--sel)','var(--btn)'],['var(--btn)','var(--admin)'],['var(--admin)','var(--sel)'],['var(--sel)','var(--admin)'],['var(--btn)','var(--sel)']];
+const sameShow=(a,b)=>a!=null&&b!=null&&String(a)===String(b);
+const findShow=id=>SHOWS.find(s=>sameShow(s.id,id));
+const fmtShowDate=d=>{
+  if(!d)return '';
+  const dt=new Date(d+'T00:00:00');
+  if(isNaN(dt))return d;
+  return dt.toLocaleDateString(LANG==='en'?'en-GB':'th-TH',{day:'numeric',month:'short',year:'numeric'});
+};
+const showLabel=s=>s?(s.title+' · '+fmtShowDate(s.date)+' · '+s.time+(s.duration?' · '+s.duration+T('minutes_suffix'):'')):'-';
+const pickupTime=s=>{
+  if(!s)return '-';
+  const m=s.time.match(/(\d{1,2}):(\d{2})/);
+  if(!m)return s.time;
+  let h=+m[1],mi=+m[2]-30;
+  if(mi<0){mi+=60;h-=1}
+  if(h<0)h+=24;
+  const hm=String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0');
+  return LANG==='en'?hm:hm+' น.';
+};
+function genMovieId(){
+  return 'm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+}
+function cropToRatio(file,rw,rh){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      URL.revokeObjectURL(url);
+      const ratio=rw/rh;
+      let sx=0,sy=0,sw=img.naturalWidth,sh=img.naturalHeight;
+      if(sw/sh>ratio){sw=sh*ratio;sx=(img.naturalWidth-sw)/2}
+      else{sh=sw/ratio;sy=(img.naturalHeight-sh)/2}
+      const outW=600,outH=Math.round(outW*rh/rw);
+      const canvas=document.createElement('canvas');canvas.width=outW;canvas.height=outH;
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,sx,sy,sw,sh,0,0,outW,outH);
+      canvas.toBlob(b=>b?resolve(b):reject(new Error('crop failed')),'image/jpeg',0.88);
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('โหลดรูปไม่สำเร็จ'))};
+    img.src=url;
+  });
+}
+const LKEY='rx-auth-v2',ADMIN_KEY='admin01',ADMIN_PIN='111040';
+const $=id=>document.getElementById(id);
+const pad=n=>String(n).padStart(3,'0');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const norm=s=>s.trim().toLowerCase();
+const sortSeats=a=>[...a].sort((x,y)=>x[0]===y[0]?x.slice(1)-y.slice(1):x[0].localeCompare(y[0]));
+const fmtDate=ts=>ts?new Date(ts).toLocaleString(LANG==='en'?'en-GB':'th-TH',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'-';
+const num=n=>n.toLocaleString(LANG==='en'?'en-US':'th-TH');
+const baht=n=>T('baht_value',{n:num(n)});
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+let LANG='th';
+try{LANG=localStorage.getItem('rx-lang')==='en'?'en':'th'}catch(e){}
+const STR={
+  splash_tag:['🎬 งานฉายหนังการกุศล เพื่อน้องๆ ผู้พิการซ้ำซ้อน','🎬 A charity movie event for children with multiple disabilities'],
+  splash_skip:['ข้าม ›','Skip ›'],
+  intro_title:['เกี่ยวกับกิจกรรมนี้','About this event'],
+  intro_body:['กิจกรรมในครั้งนี้จัดทำโดยนักศึกษาเภสัชศาสตร์ชั้นปีที่ 1 ปีการศึกษา 2569 วิทยาลัยเภสัชศาสตร์ มหาวิทยาลัยรังสิต ซึ่งเป็นส่วนหนึ่งในรายวิชา RSU111 สังคมธรรมาธิปไตย ในโครงการเรียนรู้ชีวิตสู่จิตสำนึกเภสัชกรที่ดี เพื่อช่วยเหลือเด็กพิการซ้ำซ้อน โดยรายได้ทั้งหมดที่ได้รับจากกิจกรรมในครั้งนี้จะนำไปเพื่อช่วยเหลือ เด็กพิการซ้ำซ้อน ในโครงการดังกล่าว','This event is organized by first-year pharmacy students (academic year 2026) at the College of Pharmacy, Rangsit University, as part of the RSU111 Civic Democracy course, under the "Learning Life Toward Pharmacist Conscience" project, to help children with multiple disabilities. All proceeds from this event will go toward helping children with multiple disabilities in this project.'],
+  intro_close:['รับทราบ เข้าสู่หน้าเว็บ','Got it, enter site'],
+  tagline_default:['ระบบจองตั๋วหนัง','Movie ticket booking system'],
+  tagline_booking:['กำลังจองสำหรับ ','Booking for '],
+  tagline_admin:['แผงควบคุมสำหรับเจ้าหน้าที่','Staff control panel'],
+  movieselect_title:['เลือกรอบภาพยนตร์','Choose a showtime'],
+  movieselect_sub:['แตะโปสเตอร์เพื่อเลือกเรื่องที่ต้องการชม','Tap a poster to choose the movie you want to watch'],
+  login_back:['← กลับไปเลือกภาพยนตร์','← Back to movie selection'],
+  tab_login:['เข้าสู่ระบบ','Log in'],
+  tab_register:['สร้างบัญชีใหม่','Create account'],
+  auth_title_login:['เข้าสู่ระบบ','Log in'],
+  auth_title_register:['สร้างบัญชีใหม่','Create account'],
+  auth_sub_login:['กรอกชื่อผู้ใช้และรหัสผ่านของบัญชีที่มีอยู่แล้ว','Enter the username and password of your existing account'],
+  auth_sub_register:['ตั้งชื่อผู้ใช้เป็นภาษาอังกฤษ และตั้งรหัสผ่าน 6 หลัก พิมพ์ยืนยันอีกครั้ง','Set an English username and a 6-digit password, then confirm it'],
+  uname_label:['ชื่อผู้ใช้','Username'],
+  uname_placeholder_login:['ชื่อผู้ใช้ของคุณ','Your username'],
+  uname_placeholder_register:['เช่น somchai99, JaneDoe','e.g. somchai99, JaneDoe'],
+  engnote:['⚠ ชื่อผู้ใช้ต้องเป็นภาษาอังกฤษเท่านั้น (A-Z, ตัวเลข, และ _) ห้ามใช้ภาษาไทยหรืออักขระพิเศษอื่น','⚠ Username must be in English only (A-Z, digits, and _). Thai or other special characters are not allowed'],
+  upin_label_login:['รหัสผ่าน (ตัวเลข 6 หลัก)','Password (6 digits)'],
+  upin_label_register:['ตั้งรหัสผ่าน (ตัวเลข 6 หลัก)','Set password (6 digits)'],
+  upin2_label:['ยืนยันรหัสผ่านอีกครั้ง','Confirm password'],
+  loginbtn_login:['เข้าสู่ระบบ','Log in'],
+  loginbtn_register:['สร้างบัญชี','Create account'],
+  loginbtn_checking:['กำลังตรวจสอบ…','Checking…'],
+  who_hello:['สวัสดี ','Hello '],
+  badge_staff:['เจ้าหน้าที่','Staff'],
+  logout:['ออกจากระบบ','Log out'],
+  showswitch_label:['กำลังจองที่นั่งสำหรับรอบ','Booking seats for showtime'],
+  screen_label:['จอภาพยนตร์','SCREEN'],
+  control_room_label:['ห้องควบคุม','Control Room'],
+  aisle_label:['ทางเดิน','Aisle'],
+  legend_free:['ว่าง','Available'],
+  legend_sel:['ที่คุณเลือก','Your selection'],
+  legend_taken:['ถูกจองแล้ว','Taken'],
+  seats_summary:['ว่าง {free} จาก {total} ที่นั่ง · ที่นั่งละ {price} บาท','{free} of {total} seats available · {price} THB per seat'],
+  panel_seats_label:['ที่นั่งที่เลือก','Selected seats'],
+  panel_seats_empty:['ยังไม่ได้เลือก','None selected'],
+  panel_count_label:['จำนวน','Quantity'],
+  panel_count_value:['{n} ที่นั่ง','{n} seat(s)'],
+  panel_total_label:['ราคารวม','Total'],
+  baht_value:['{n} บาท','{n} THB'],
+  book_btn:['จองที่นั่ง','Book seats'],
+  book_btn_busy:['กำลังจอง…','Booking…'],
+  mybookings_title:['การจองของฉัน','My bookings'],
+  mybookings_empty:['คุณยังไม่มีการจอง','You have no bookings yet'],
+  guestlogin_btn:['เข้าสู่ระบบ','Log in'],
+  guest_mybookings_prompt:['เข้าสู่ระบบเพื่อดูการจองของคุณ','Log in to see your bookings'],
+  guest_book_toast:['กรุณาเข้าสู่ระบบก่อนทำการจอง','Please log in before booking'],
+  cancel_btn:['ยกเลิก','Cancel'],
+  admin_users_title:['บัญชีผู้ใช้ทั้งหมด','All user accounts'],
+  admin_users_sub:['รายชื่อผู้ใช้ รหัสผ่าน และจำนวนการจองของแต่ละคน (ประวัติการจองแบบละเอียดดูได้ในตารางด้านล่าง)','List of users, passwords, and each person\u2019s booking count (see the table below for detailed booking history)'],
+  th_username:['ชื่อผู้ใช้','Username'],
+  th_password:['รหัสผ่าน','Password'],
+  th_signup:['สมัครเมื่อ','Signed up'],
+  th_bookingcount:['จำนวนการจอง','Bookings'],
+  userempty:['ยังไม่มีผู้ใช้สมัครสมาชิก','No registered users yet'],
+  deleteaccount_btn:['ลบบัญชี','Delete account'],
+  admin_movies_title:['จัดการรอบภาพยนตร์','Manage showtimes'],
+  admin_seatedit_title:['จัดการที่นั่งรายรอบ','Manage seats by showtime'],
+  admin_seatedit_sub:['คลิกที่นั่งว่างเพื่อเพิ่มการจองโดยเจ้าหน้าที่ หรือคลิกที่นั่งที่จองแล้วเพื่อยกเลิก','Click an empty seat to add a staff booking, or click a booked seat to cancel it'],
+  admin_seatedit_show_label:['เลือกรอบฉาย','Choose a showtime'],
+  admin_book_staff_btn:['เพิ่มการจองโดยเจ้าหน้าที่','Add staff booking'],
+  admin_no_seats_selected:['ยังไม่ได้เลือกที่นั่ง','No seats selected'],
+  admin_selected_seats:['เลือกไว้: {seats} · {total}','Selected: {seats} · {total}'],
+  confirm_admin_cancel_seat:['ยืนยันยกเลิกที่นั่ง {id} (รหัสการจอง {code})?','Cancel seat {id} (booking {code})?'],
+  msg_admin_seat_cancelled:['ยกเลิกที่นั่ง {id} แล้ว','Seat {id} cancelled'],
+  msg_admin_booking_created:['เพิ่มการจองโดยเจ้าหน้าที่แล้ว (รหัส {code})','Staff booking created ({code})'],
+  staff_booking_label:['จองโดยเจ้าหน้าที่','Booked by staff'],
+  pay_title:['ชำระเงินผ่าน PromptPay','Pay via PromptPay'],
+  pay_amount_prefix:['ยอดที่ต้องชำระ ','Amount due '],
+  pay_slip_label:['อัปโหลดสลิปการโอนเงิน','Upload transfer slip'],
+  pay_wait_verify:['หากท่านชำระเงินแล้ว กรุณารอการตรวจสอบจากเจ้าหน้าที่ เวลาทำการ 9:00 น.-20:00 น.','If you have paid, please wait for staff verification. Office hours 9:00 AM\u20138:00 PM.'],
+  msg_slip_uploaded:['อัปโหลดสลิปแล้ว','Slip uploaded'],
+  th_slip:['สลิป','Slip'],
+  slip_none:['ยังไม่อัปโหลด','Not uploaded yet'],
+  pay_upload_btn:['อัปโหลดสลิปการโอนเงิน','Upload transfer slip'],
+  pay_go_btn:['ชำระเงิน','Pay'],
+  booking_pending_title:['เกือบเสร็จแล้ว! กรุณาชำระเงินเพื่อยืนยันการจอง','Almost there! Pay to confirm your booking'],
+  booking_pending_note:['ที่นั่งของท่านจะยังไม่ถูกบันทึกจนกว่าจะชำระเงินและอัปโหลดสลิปสำเร็จ หากยังไม่ชำระเงิน จะถือว่าการจองนี้ยังไม่สำเร็จ','Your seats will not be reserved until payment is completed and the slip is uploaded. If payment is not made, this booking is not yet successful.'],
+  back_btn:['← ย้อนกลับ','← Back'],
+  pay_upload_title:['อัปโหลดสลิปการโอนเงิน','Upload transfer slip'],
+  cancel_upload_btn:['← ยกเลิกการอัปโหลด','← Cancel upload'],
+  pay_status_title:['สถานะการชำระเงิน','Payment status'],
+  status_awaiting:['รอตรวจสอบ','Awaiting verification'],
+  status_awaiting_full:['รอตรวจสอบการชำระเงิน','Awaiting payment verification'],
+  status_verified:['ตรวจสอบการชำระเงินแล้ว','Payment verified'],
+  status_problem_prefix:['การชำระเงินมีปัญหา โปรดติดต่อ Instagram: ','Payment issue, please contact Instagram: '],
+  th_paystatus:['สถานะการชำระเงิน','Payment status'],
+  status_opt_awaiting:['รอตรวจสอบการชำระเงิน','Awaiting payment verification'],
+  status_opt_verified:['ตรวจสอบการชำระเงินแล้ว','Payment verified'],
+  status_opt_problem:['การชำระเงินมีปัญหา','Payment issue'],
+  msg_status_updated:['อัปเดตสถานะแล้ว','Status updated'],
+  admin_byshow_title:['สรุปการจองแยกตามรอบฉาย','Bookings by showtime'],
+  admin_bookings_title:['รายการจองทั้งหมด','All bookings'],
+  admin_nav_label:['เมนูจัดการ','Admin menu'],
+  admin_payment_title:['ช่องทางการชำระเงิน','Payment channel'],
+  admin_payment_sub:['อัปโหลดรูปภาพช่องทางการชำระเงิน (เช่น QR PromptPay) รูปจะถูกปรับเป็นสัดส่วน 2:3 โดยอัตโนมัติ และจะแสดงในหน้าชำระเงินของผู้จองทันที','Upload the payment channel image (e.g. a PromptPay QR code). It will be auto-resized to a 2:3 ratio and shown immediately on the booker\u2019s payment screen'],
+  admin_payment_upload_label:['อัปโหลดรูปใหม่','Upload a new image'],
+  msg_payment_qr_updated:['อัปเดตรูปช่องทางการชำระเงินแล้ว','Payment channel image updated'],
+  admin_byshow_sub:['จำนวนที่นั่งที่ถูกจอง จำนวนรายการจอง และรายชื่อที่นั่งของแต่ละรอบ','Seats booked, number of bookings, and the seat list for each showtime'],
+  th_seatsbooked:['ที่นั่งที่จองแล้ว','Seats booked'],
+  th_bookingcount2:['จำนวนรายการจอง','Bookings'],
+  th_seatlist:['รายชื่อที่นั่ง','Seat list'],
+  byshowempty:['ยังไม่มีรอบฉาย','No showtimes yet'],
+  seats_booked_of:['{booked} / {total} ที่นั่ง','{booked} / {total} seats'],
+  no_seats_booked:['ยังไม่มีการจอง','No bookings yet'],
+  admin_movies_sub:['แก้ไขชื่อเรื่อง วันที่ฉาย เวลาฉาย และรูปโปสเตอร์ของแต่ละรอบ (รูปที่อัปโหลดจะถูกปรับขนาดเป็นสัดส่วน 2:3 โดยอัตโนมัติ) — เพิ่มหรือลบรอบฉายได้ตามต้องการ','Edit each showtime\u2019s title, date, time, and poster image (uploaded images are auto-resized to a 2:3 ratio) — add or remove showtimes as needed'],
+  addmovie_btn:['+ เพิ่มรอบฉายใหม่','+ Add new showtime'],
+  clearall_btn:['ล้างข้อมูลการจองทั้งหมด','Clear all bookings'],
+  clearall_busy:['กำลังล้างข้อมูล…','Clearing…'],
+  th_code:['รหัส','Code'],
+  th_show:['รอบ','Showtime'],
+  th_booker:['ผู้จอง','Booked by'],
+  th_seats:['ที่นั่ง','Seats'],
+  th_amount:['ยอด','Amount'],
+  th_bookedat:['วันเวลาที่จอง','Booked at'],
+  adminempty:['ยังไม่มีการจอง','No bookings yet'],
+  admin_summary:['ทั้งหมด {count} รายการ · {total}','{count} bookings total · {total}'],
+  edit_btn:['แก้ไข','Edit'],
+  delete_btn:['ลบ','Delete'],
+  mf_poster_label:['อัปโหลดรูปโปสเตอร์ (ปรับเป็นสัดส่วน 2:3 อัตโนมัติ)','Upload poster image (auto-resized to 2:3)'],
+  mf_removeposter:['ลบรูปโปสเตอร์','Remove poster'],
+  mf_title_label:['ชื่อเรื่อง','Title'],
+  mf_date_label:['วันที่ฉาย','Screening date'],
+  mf_time_label:['เวลาฉาย (เช่น 13:00 น.)','Showtime (e.g. 13:00)'],
+  mf_duration_label:['ระยะเวลาของหนัง (นาที)','Movie duration (minutes)'],
+  mf_duration_ph:['เช่น 120','e.g. 120'],
+  mf_letter_label:['สัญลักษณ์สำรอง (ใช้เมื่อไม่มีรูปโปสเตอร์)','Fallback symbol (used when there\u2019s no poster)'],
+  mf_save:['บันทึกเรื่องนี้','Save this movie'],
+  mf_delete:['ลบรอบฉายนี้','Delete this showtime'],
+  edit_modal_title:['แก้ไขการจอง ','Edit booking '],
+  edit_seats_label:['ที่นั่ง (คั่นด้วยจุลภาค เช่น A1,A2,B5)','Seats (comma-separated, e.g. A1,A2,B5)'],
+  edit_show_label:['รอบฉาย','Showtime'],
+  edit_cancel:['ยกเลิก','Cancel'],
+  edit_save:['บันทึก','Save'],
+  ticket_success:['จองสำเร็จ! ได้รับตั๋วหนังแล้ว','Booking confirmed! Your ticket is ready'],
+  ticket_seats_prefix:['ที่นั่ง ','Seats '],
+  ticket_total_prefix:['ยอดชำระ ','Total paid '],
+  ticket_booked_at:['จองเมื่อ ','Booked at '],
+  ticket_pickup:['📍 หากท่านชำระเงินแล้วสามารถรับตั๋วได้ที่ <b>ห้อง 4/1-503 อาคาร 4/1</b> ในวันที่ <b>{date}</b> ตั้งแต่เวลา <b>{time}</b> (30 นาทีก่อนรอบฉายเริ่ม)','📍 If you have paid, you can collect your ticket at <b>Room 4/1-503, Building 4/1</b> on <b>{date}</b> from <b>{time}</b> onward (30 minutes before showtime)'],
+  ticket_thanks:['ขอขอบคุณสำหรับการสนับสนุน รายได้ที่ได้จากกิจกรรมในครั้งนี้จะนำไปช่วยเหลือเด็กพิการซ้ำซ้อน ในโครงการเรียนรู้ชีวิตสู่จิตสำนึกเภสัชกรที่ดี','Thank you for your support. Proceeds from this event will help children with multiple disabilities, as part of the \u201cLearning Life Toward Pharmacist Conscience\u201d project'],
+  close_btn:['ปิด','Close'],
+  confirm_title:['ยืนยันการทำรายการ','Confirm action'],
+  confirm_yes:['ยืนยัน','Confirm'],
+  err_fill_movie:['กรุณากรอกชื่อเรื่อง วันที่ และเวลาฉายให้ครบ','Please fill in the title, date, and showtime'],
+  err_duration:['ระยะเวลาของหนังต้องเป็นตัวเลขนาทีที่มากกว่า 0','Movie duration must be a number of minutes greater than 0'],
+  msg_movie_saved:['บันทึก {title} แล้ว','Saved {title}'],
+  err_movie_save_failed:['บันทึกไม่สำเร็จ กรุณาลองใหม่','Save failed, please try again'],
+  err_choose_image:['กรุณาเลือกไฟล์รูปภาพ','Please choose an image file'],
+  err_upload_unavailable:['ระบบอัปโหลดรูปยังไม่พร้อมใช้งาน กรุณารีเฟรชหน้านี้','The image upload system isn\u2019t ready yet, please refresh this page'],
+  msg_poster_uploaded:['อัปโหลดโปสเตอร์แล้ว','Poster uploaded'],
+  err_upload_failed:['อัปโหลดรูปไม่สำเร็จ กรุณาลองใหม่','Upload failed, please try again'],
+  confirm_remove_poster:['ลบรูปโปสเตอร์นี้และกลับไปใช้สัญลักษณ์สำรองแทน?','Remove this poster image and use the fallback symbol instead?'],
+  msg_poster_removed:['ลบรูปโปสเตอร์แล้ว','Poster removed'],
+  err_delete_failed:['ลบไม่สำเร็จ','Delete failed'],
+  confirm_delete_show_bookings:['รอบ "{title}" มีการจองอยู่ {count} รายการ หากลบ ข้อมูลการจองจะยังอยู่ในระบบแต่จะไม่แสดงชื่อเรื่องอีก ต้องการลบหรือไม่?','Showtime "{title}" has {count} booking(s). If deleted, those bookings will stay in the system but will no longer show the title. Delete anyway?'],
+  confirm_delete_show:['ยืนยันลบรอบ "{title}"?','Delete showtime "{title}"?'],
+  msg_show_deleted:['ลบรอบฉายแล้ว','Showtime deleted'],
+  msg_show_added:['เพิ่มรอบฉายใหม่แล้ว เลื่อนลงไปแก้ไขรายละเอียดได้เลย','New showtime added — scroll down to edit its details'],
+  err_show_add_failed:['เพิ่มรอบฉายไม่สำเร็จ','Failed to add showtime'],
+  err_fill_username:['กรุณากรอกชื่อผู้ใช้','Please enter a username'],
+  err_pin_format:['รหัสผ่านต้องเป็นตัวเลข 6 หลัก','Password must be 6 digits'],
+  err_pin_mismatch:['รหัสผ่านที่ยืนยันไม่ตรงกัน กรุณาพิมพ์ใหม่','Confirmation password doesn\u2019t match, please re-enter'],
+  err_username_english:['ชื่อผู้ใช้ต้องเป็นภาษาอังกฤษเท่านั้น กรุณากรอกใหม่','Username must be in English only, please re-enter'],
+  err_db_not_ready:['ยังไม่พร้อมเชื่อมต่อฐานข้อมูล กรุณาลองใหม่อีกครั้ง','Database connection isn\u2019t ready yet, please try again'],
+  err_db_connect_failed:['เชื่อมต่อฐานข้อมูลไม่สำเร็จ กรุณารีเฟรชหน้านี้','Could not connect to the database, please refresh this page'],
+  err_username_reserved:['ชื่อผู้ใช้นี้ถูกสงวนไว้ ไม่สามารถสมัครได้','This username is reserved and cannot be registered'],
+  err_wrong_password:['รหัสผ่านไม่ถูกต้อง','Incorrect password'],
+  err_no_account:['ไม่พบบัญชีผู้ใช้นี้ กรุณาสร้างบัญชีใหม่ก่อน','No account found. Please create a new account first'],
+  err_username_taken:['ชื่อผู้ใช้นี้ถูกใช้แล้ว กรุณาเข้าสู่ระบบแทน หรือตั้งชื่อผู้ใช้อื่น','This username is already taken. Please log in instead, or choose a different username'],
+  err_generic:['เกิดข้อผิดพลาด กรุณาลองใหม่','Something went wrong, please try again'],
+  confirm_cancel_booking:['{code} — ยืนยันยกเลิกการจองนี้?','{code} — confirm cancellation of this booking?'],
+  msg_booking_cancelled:['ยกเลิกการจอง {code} แล้ว','Booking {code} cancelled'],
+  err_cancel_failed:['ยกเลิกไม่สำเร็จ','Cancellation failed'],
+  confirm_delete_account:['ผู้ใช้ "{name}" มีประวัติการจอง {count} รายการ หากลบบัญชี ผู้ใช้นี้จะเข้าสู่ระบบไม่ได้อีก (แต่ประวัติการจองจะยังอยู่ในระบบ) ต้องการลบหรือไม่?','User "{name}" has {count} booking(s). If deleted, this user can no longer log in (booking history will remain). Delete anyway?'],
+  confirm_delete_account_simple:['ยืนยันลบบัญชีผู้ใช้ "{name}"?','Delete user account "{name}"?'],
+  msg_account_deleted:['ลบบัญชีผู้ใช้แล้ว','User account deleted'],
+  err_account_delete_failed:['ลบบัญชีไม่สำเร็จ กรุณาลองใหม่','Failed to delete account, please try again'],
+  confirm_delete_booking:['{code} — ยืนยันลบการจองนี้?','{code} — confirm deletion of this booking?'],
+  msg_booking_deleted:['ลบ {code} แล้ว','Deleted {code}'],
+  msg_no_bookings_to_clear:['ยังไม่มีการจองให้ล้าง','There are no bookings to clear'],
+  confirm_clear_all:['ล้างข้อมูลการจองทั้งหมด {count} รายการของทุกคน (บัญชีผู้ใช้จะไม่ถูกลบ)?','Clear all {count} bookings from everyone? (user accounts will not be deleted)'],
+  msg_cleared_all:['ล้างข้อมูลการจองทั้งหมดแล้ว','All bookings cleared'],
+  err_clear_partial:['ล้างข้อมูลไม่สำเร็จบางส่วน กรุณาลองใหม่','Some bookings failed to clear, please try again'],
+  err_seat_format:['รูปแบบที่นั่งไม่ถูกต้อง เช่น A1,B12','Invalid seat format, e.g. A1,B12'],
+  err_seat_clash:['ที่นั่ง {seats} ถูกจองโดยรายการอื่นแล้ว','Seat(s) {seats} are already booked by another reservation'],
+  err_save_failed:['บันทึกไม่สำเร็จ กรุณาลองใหม่','Save failed, please try again'],
+  err_seat_taken_msg:['ที่นั่ง {seats} ถูกจองไปแล้ว กรุณาเลือกที่นั่งอื่น','Seat(s) {seats} have already been booked, please choose other seats'],
+  err_booking_full:['หมายเลขการจองเต็มแล้ว (PD-999)','Booking numbers are full (PD-999)'],
+  err_booking_busy:['ระบบกำลังประมวลผลรายการอื่นอยู่ กรุณากดจองอีกครั้ง','The system is processing another transaction, please try booking again'],
+  err_booking_failed:['จองไม่สำเร็จ กรุณาลองใหม่อีกครั้ง','Booking failed, please try again'],
+  aria_seat:['ที่นั่ง {id} {status}','Seat {id} {status}'],
+  aria_taken:['ถูกจองแล้ว','taken'],
+  aria_selected:['เลือกอยู่','selected'],
+  aria_available:['ว่าง','available'],
+  poster_alt_prefix:['โปสเตอร์ ','Poster for '],
+  minutes_suffix:[' นาที',' min'],
+};
+function T(key,vars){
+  const pair=STR[key];
+  let s=pair?(pair[LANG==='en'?1:0]??pair[0]):key;
+  if(vars)for(const k in vars)s=s.split('{'+k+'}').join(vars[k]);
+  return s;
+}
+function applyStaticI18n(){
+  document.documentElement.lang=LANG;
+  document.title=LANG==='en'?'PharmaDay Cinema Event · Book Tickets':'PharmaDay Cinema Event · จองตั๋วหนัง';
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    el.textContent=T(el.getAttribute('data-i18n'));
+  });
+  const lt=document.getElementById('langToggle');
+  if(lt)lt.textContent=LANG==='en'?'TH':'EN';
+}
+
+let db=null,auth=null,assetsCap=null,bookings={},users={},sel=new Set(),currentShow=null;
+let adminSeatShow=null,adminSel=new Set();
+let paymentQrId='9460d08263e9ca75723896305ecce297';
+function applyQrImages(){
+  const src='/_blob/'+paymentQrId;
+  const a=$('qrImgPay'),b=$('qrImgUpload'),prev=$('paymentPreview');
+  if(a)a.src=src;
+  if(b)b.src=src;
+  if(prev)prev.innerHTML=paymentQrId?`<img src="${esc(src)}" alt="">`:'';
+}
+applyQrImages();
+
+/* modal-based confirm/alert — window.confirm/alert are blocked inside the artifact sandbox */
+function showToast(msg){
+  const t=document.createElement('div');t.className='toast';t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),250)},3200);
+  if(typeof playToastSound==='function')playToastSound();
+}
+function showConfirm(msg){
+  return new Promise(resolve=>{
+    const ov=document.createElement('div');ov.className='overlay';
+    ov.innerHTML=`<div class="modal"><h3>${T('confirm_title')}</h3><p class="sub" style="margin:0">${msg}</p><div class="modalbtns"><button class="cancel">${T('cancel_btn')}</button><button class="save">${T('confirm_yes')}</button></div></div>`;
+    document.body.appendChild(ov);
+    const close=v=>{ov.remove();resolve(v)};
+    ov.querySelector('.cancel').addEventListener('click',()=>close(false));
+    ov.querySelector('.save').addEventListener('click',()=>close(true));
+    ov.addEventListener('click',e=>{if(e.target===ov)close(false)});
+  });
+}
+
+const SVG_NS='http://www.w3.org/2000/svg';
+function svgEl(n,attrs,parent){
+  const e=document.createElementNS(SVG_NS,n);
+  for(const k in attrs)e.setAttribute(k,attrs[k]);
+  parent.appendChild(e);
+  return e;
+}
+function buildSeatSVG(svg,onSeatClick){
+  const R=1500,CX=500,STEP=32;
+  svg.innerHTML='';
+  svg.setAttribute('viewBox','0 0 1000 900');
+  svgEl('rect',{x:CX-62,y:128,width:124,height:112,rx:6,class:'svgRoom'},svg);
+  svgEl('text',{x:CX,y:178,class:'svgLbl'},svg).textContent=T('control_room_label');
+  svgEl('text',{x:CX,y:600,class:'svgLbl'},svg).textContent=T('aisle_label');
+  svgEl('path',{d:'M300 868 Q500 846 700 868 L700 884 L300 884 Z',class:'svgScreen'},svg);
+  svgEl('text',{x:CX,y:838,class:'svgLbl',style:'font-size:16px'},svg).textContent=T('screen_label');
+  ROW_DEF.forEach(([L,total],i)=>{
+    const half=total/2,gap=i<10?42:70,y0=770-i*52;
+    function pos(dx){return {x:CX+dx,y:y0+dx*dx/(2*R),a:Math.atan(dx/R)*180/Math.PI}}
+    for(let s=1;s<=total;s++){
+      const dx=s<=half?-(gap+(half-s)*STEP+16):(gap+(s-half-1)*STEP+16);
+      const p=pos(dx),id=L+s;
+      const g=svgEl('g',{class:'seat',transform:`translate(${p.x.toFixed(1)} ${p.y.toFixed(1)}) rotate(${p.a.toFixed(2)})`,tabindex:'0',role:'button','data-id':id},svg);
+      svgEl('rect',{x:-14,y:-14,width:28,height:28,rx:5},g);
+      svgEl('text',{x:0,y:3.5},g).textContent=s;
+      g.addEventListener('click',()=>onSeatClick(id));
+      g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSeatClick(id)}});
+    }
+    const edge=gap+(half-1)*STEP+16+34;
+    [-edge,edge].forEach(dx=>{const p=pos(dx);svgEl('text',{x:p.x,y:p.y,class:'svgRowLabel'},svg).textContent=L});
+  });
+}
+const grid=$('grid');
+buildSeatSVG(grid,id=>toggleSeat(id));
+
+const adminGrid=$('adminGrid');
+buildSeatSVG(adminGrid,id=>adminToggleSeat(id));
+
+function createSeatZoom(hallId,svgId,outId,inId,resetId){
+  const hall=$(hallId),svg=$(svgId);
+  let zoom=1;
+  function apply(){svg.style.width=(zoom*100)+'%'}
+  function setZoom(z){zoom=Math.min(2.5,Math.max(1,z));apply()}
+  const outBtn=$(outId),inBtn=$(inId),resetBtn=$(resetId);
+  if(outBtn)outBtn.addEventListener('click',()=>setZoom(zoom-0.25));
+  if(inBtn)inBtn.addEventListener('click',()=>setZoom(zoom+0.25));
+  if(resetBtn)resetBtn.addEventListener('click',()=>setZoom(1));
+  let pinchStart=null,pinchZoom0=1;
+  const dist=(a,b)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+  hall.addEventListener('touchstart',e=>{
+    if(e.touches.length===2){pinchStart=dist(e.touches[0],e.touches[1]);pinchZoom0=zoom}
+  },{passive:true});
+  hall.addEventListener('touchmove',e=>{
+    if(e.touches.length===2&&pinchStart){
+      setZoom(pinchZoom0*(dist(e.touches[0],e.touches[1])/pinchStart));
+      e.preventDefault();
+    }
+  },{passive:false});
+  hall.addEventListener('touchend',e=>{if(e.touches.length<2)pinchStart=null});
+  return {fit:()=>setZoom(1)};
+}
+const userSeatZoom=createSeatZoom('hall','grid','zoomOut','zoomIn','zoomReset');
+const adminSeatZoomCtl=createSeatZoom('adminHall','adminGrid','adminZoomOut','adminZoomIn','adminZoomReset');
+
+const movieGrid=$('movieGrid');
+function renderMovieGrid(){
+  movieGrid.innerHTML='';
+  SHOWS.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.className='poster'+(sameShow(s.id,currentShow)?' active':'');b.dataset.show=s.id;
+    const grad=GRADIENTS[i%GRADIENTS.length];
+    const art=s.posterId?`<img src="/_blob/${esc(s.posterId)}" alt="">`:esc(s.letter);
+    const artStyle=s.posterId?'':`background:linear-gradient(135deg,${grad[0]},${grad[1]})`;
+    const dur=s.duration?' · '+s.duration+T('minutes_suffix'):'';
+    b.innerHTML=`<span class="art" style="${artStyle}">${art}</span><span class="cap"><b>${esc(s.title)}</b><span>${esc(fmtShowDate(s.date))} · ${esc(s.time)}${esc(dur)}</span></span>`;
+    b.addEventListener('click',()=>selectMovie(s.id));
+    movieGrid.appendChild(b);
+  });
+}
+renderMovieGrid();
+
+const movieForms=$('movieForms');
+function renderMovieForms(){
+  if(!auth||auth.role!=='admin')return;
+  movieForms.innerHTML='';
+  SHOWS.forEach(s=>{
+    const card=document.createElement('div');card.className='movieForm';
+    const preview=s.posterId?`<img src="/_blob/${esc(s.posterId)}" alt="">`:esc(s.letter||'?');
+    card.innerHTML=`
+      <div class="posterPreview">${preview}</div>
+      <div class="field"><label>${T('mf_poster_label')}</label><input type="file" accept="image/*" class="mf-poster-input"></div>
+      ${s.posterId?`<button type="button" class="mini danger mf-removeposter" style="justify-self:start">${T('mf_removeposter')}</button>`:''}
+      <div class="field"><label>${T('mf_title_label')}</label><input class="mf-title" maxlength="40" value="${esc(s.title)}"></div>
+      <div class="field"><label>${T('mf_date_label')}</label><input type="date" class="mf-date" value="${esc(s.date||'')}"></div>
+      <div class="field"><label>${T('mf_time_label')}</label><input class="mf-time" maxlength="20" value="${esc(s.time)}"></div>
+      <div class="field"><label>${T('mf_duration_label')}</label><input type="number" class="mf-duration" min="1" max="600" placeholder="${T('mf_duration_ph')}" value="${s.duration?esc(String(s.duration)):''}"></div>
+      <div class="field"><label>${T('mf_letter_label')}</label><input class="mf-letter" maxlength="4" value="${esc(s.letter||'')}"></div>
+      <div class="err mf-err"></div>
+      <button class="mini save" type="button">${T('mf_save')}</button>
+      <button class="mini danger mf-delete" type="button">${T('mf_delete')}</button>`;
+    card.querySelector('.save').addEventListener('click',async()=>{
+      const title=card.querySelector('.mf-title').value.trim();
+      const time=card.querySelector('.mf-time').value.trim();
+      const date=card.querySelector('.mf-date').value;
+      const durRaw=card.querySelector('.mf-duration').value.trim();
+      const letter=card.querySelector('.mf-letter').value.trim()||'?';
+      const err=card.querySelector('.mf-err');err.textContent='';
+      if(!title||!time||!date){err.textContent=T('err_fill_movie');return}
+      let duration=null;
+      if(durRaw){
+        duration=Number(durRaw);
+        if(!Number.isFinite(duration)||duration<=0){err.textContent=T('err_duration');return}
+        duration=Math.round(duration);
+      }
+      try{
+        await db.doc('movies/'+s.id).update({title,time,date,letter,duration});
+        showToast(T('msg_movie_saved',{title}));
+      }catch(e){console.error(e);err.textContent=T('err_movie_save_failed')}
+    });
+    const posterInput=card.querySelector('.mf-poster-input');
+    posterInput.addEventListener('change',async()=>{
+      const file=posterInput.files&&posterInput.files[0];
+      if(!file)return;
+      const err=card.querySelector('.mf-err');err.textContent='';
+      if(!file.type.startsWith('image/')){showToast(T('err_choose_image'));posterInput.value='';return}
+      if(!assetsCap){err.textContent=T('err_upload_unavailable');posterInput.value='';return}
+      posterInput.disabled=true;
+      try{
+        const blob=await cropToRatio(file,2,3);
+        const oldId=s.posterId;
+        const res=await assetsCap.upload(blob);
+        await db.doc('movies/'+s.id).update({posterId:res.id});
+        if(oldId){try{await assetsCap.delete(oldId)}catch(e){}}
+        showToast(T('msg_poster_uploaded'));
+      }catch(e){console.error(e);err.textContent=T('err_upload_failed')}
+      finally{posterInput.disabled=false;posterInput.value=''}
+    });
+    const rm=card.querySelector('.mf-removeposter');
+    if(rm)rm.addEventListener('click',async()=>{
+      if(!await showConfirm(T('confirm_remove_poster')))return;
+      try{
+        if(assetsCap&&s.posterId){try{await assetsCap.delete(s.posterId)}catch(e){}}
+        await db.doc('movies/'+s.id).update({posterId:null});
+        showToast(T('msg_poster_removed'));
+      }catch(e){console.error(e);showToast(T('err_delete_failed'))}
+    });
+    card.querySelector('.mf-delete').addEventListener('click',async()=>{
+      const count=Object.values(bookings).filter(b=>sameShow(b.show,s.id)).length;
+      const msg=count
+        ?T('confirm_delete_show_bookings',{title:esc(s.title),count})
+        :T('confirm_delete_show',{title:esc(s.title)});
+      if(!await showConfirm(msg))return;
+      try{
+        if(assetsCap&&s.posterId){try{await assetsCap.delete(s.posterId)}catch(e){}}
+        await db.doc('movies/'+s.id).delete();
+        showToast(T('msg_show_deleted'));
+      }catch(e){console.error(e);showToast(T('err_delete_failed'))}
+    });
+    movieForms.appendChild(card);
+  });
+}
+$('adminNavToggle').addEventListener('click',()=>{
+  const open=$('adminNavList').classList.toggle('open');
+  $('adminNavToggle').setAttribute('aria-expanded',String(open));
+});
+$('adminNavList').querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+  $('adminNavList').classList.remove('open');
+  $('adminNavToggle').setAttribute('aria-expanded','false');
+}));
+
+$('paymentQrInput').addEventListener('change',async()=>{
+  const file=$('paymentQrInput').files&&$('paymentQrInput').files[0];
+  if(!file)return;
+  const err=$('paymentQrErr');err.textContent='';
+  if(!file.type.startsWith('image/')){showToast(T('err_choose_image'));$('paymentQrInput').value='';return}
+  if(!assetsCap||!db){err.textContent=T('err_upload_unavailable');$('paymentQrInput').value='';return}
+  $('paymentQrInput').disabled=true;
+  try{
+    const blob=await cropToRatio(file,2,3);
+    const oldId=paymentQrId;
+    const res=await assetsCap.upload(blob);
+    await db.doc('meta/payment').set({qrId:res.id});
+    paymentQrId=res.id;
+    applyQrImages();
+    if(oldId){try{await assetsCap.delete(oldId)}catch(e){}}
+    showToast(T('msg_payment_qr_updated'));
+  }catch(e){console.error(e);err.textContent=T('err_upload_failed')}
+  finally{$('paymentQrInput').disabled=false;$('paymentQrInput').value=''}
+});
+
+$('addMovie').addEventListener('click',async()=>{
+  if(!db)return;
+  const id=genMovieId(),order=Date.now();
+  try{
+    await db.doc('movies/'+id).set({title:'รอบฉายใหม่',date:DEFAULT_DATE,time:'18:00 น.',letter:'+',posterId:null,duration:120,order});
+    showToast(T('msg_show_added'));
+  }catch(e){console.error(e);showToast(T('err_show_add_failed'))}
+});
+
+function selectMovie(id){
+  currentShow=id;sel.clear();
+  [...movieGrid.children].forEach(t=>t.classList.toggle('active',sameShow(t.dataset.show,id)));
+  $('movieSelect').hidden=true;
+  showApp();
+}
+
+function goToLogin(){
+  $('app').hidden=true;
+  $('movieSelect').hidden=true;
+  $('guestLogin').hidden=true;
+  setAuthMode('login');
+  $('login').hidden=false;
+}
+$('guestLogin').addEventListener('click',goToLogin);
+
+function switchShow(id){
+  if(sameShow(id,currentShow))return;
+  currentShow=id;sel.clear();
+  $('tagline').textContent=T('tagline_booking')+showLabel(findShow(currentShow));
+  renderUser();
+}
+$('showSwitch').addEventListener('change',e=>switchShow(e.target.value));
+
+try{auth=JSON.parse(localStorage.getItem(LKEY)||'null')}catch(e){}
+
+function showApp(){
+  $('login').hidden=true;$('movieSelect').hidden=true;$('app').hidden=false;
+  document.body.classList.add('halloween');
+  $('guestLogin').hidden=!!auth;
+  if((!auth||auth.role!=='admin')&&!findShow(currentShow)&&SHOWS.length){
+    currentShow=SHOWS[0].id;
+    [...movieGrid.children].forEach(t=>t.classList.toggle('active',sameShow(t.dataset.show,currentShow)));
+  }
+  if(!auth){
+    $('topbar').hidden=true;
+    $('userView').hidden=false;
+    $('adminView').hidden=true;
+    $('tagline').textContent=T('tagline_booking')+showLabel(findShow(currentShow));
+    renderUser();
+    requestAnimationFrame(()=>userSeatZoom.fit());
+    return;
+  }
+  $('topbar').hidden=false;
+  $('whoName').textContent=auth.name;
+  $('roleBadge').hidden=auth.role!=='admin';
+  $('userView').hidden=auth.role==='admin';
+  $('adminView').hidden=auth.role!=='admin';
+  $('tagline').textContent=auth.role==='admin'?T('tagline_admin'):T('tagline_booking')+showLabel(findShow(currentShow));
+  if(auth.role==='admin'){renderAdmin();renderMovieForms();renderUsers();requestAnimationFrame(()=>adminSeatZoomCtl.fit())}else{renderUser();requestAnimationFrame(()=>userSeatZoom.fit())}
+}
+
+$('backToMovies').addEventListener('click',()=>{
+  $('login').hidden=true;$('movieSelect').hidden=false;$('loginErr').textContent='';
+  if(!auth)$('guestLogin').hidden=false;
+});
+$('backToMoviesFromSeats').addEventListener('click',()=>{
+  $('app').hidden=true;$('movieSelect').hidden=false;
+  if(!auth)$('guestLogin').hidden=false;
+  [...movieGrid.children].forEach(t=>t.classList.remove('active'));
+});
+
+let authMode='login';
+function setAuthMode(m){
+  authMode=m;$('loginErr').textContent='';$('upin').value='';$('upin2').value='';
+  $('modeLogin').classList.toggle('active',m==='login');
+  $('modeRegister').classList.toggle('active',m==='register');
+  $('confirmField').hidden=m!=='register';
+  $('engNote').hidden=m!=='register';
+  if(m==='login'){
+    $('authTitle').textContent=T('auth_title_login');
+    $('authSub').textContent=T('auth_sub_login');
+    $('upinLabel').textContent=T('upin_label_login');
+    $('uname').placeholder=T('uname_placeholder_login');
+    $('loginBtn').textContent=T('loginbtn_login');
+  }else{
+    $('authTitle').textContent=T('auth_title_register');
+    $('authSub').textContent=T('auth_sub_register');
+    $('upinLabel').textContent=T('upin_label_register');
+    $('uname').placeholder=T('uname_placeholder_register');
+    $('loginBtn').textContent=T('loginbtn_register');
+  }
+}
+$('modeLogin').addEventListener('click',()=>setAuthMode('login'));
+$('modeRegister').addEventListener('click',()=>setAuthMode('register'));
+
+function fireConfetti(){
+  if(typeof playSuccessChime==='function')playSuccessChime();
+  const host=$('confettiHost');host.innerHTML='';
+  const colors=document.body.classList.contains('halloween')?['#ff7518','#7be495','#b47bff','#f4ead9']:['#e8a317','#a8324f','#3a6b52','#c2415f'];
+  for(let i=0;i<16;i++){
+    const s=document.createElement('span');
+    s.style.left=(Math.random()*100)+'%';
+    s.style.background=colors[i%colors.length];
+    s.style.animationDelay=(Math.random()*.4)+'s';
+    host.appendChild(s);
+  }
+}
+
+function openPendingPopup(show,seats){
+  const s=findShow(show);
+  const total=seats.length*PRICE;
+  $('pShow').textContent=showLabel(s);
+  $('pSeats').textContent=seats.join(', ');
+  $('pTotal').textContent=baht(total);
+  $('payAmount').textContent=baht(total);
+  $('payAmount2').textContent=baht(total);
+  $('slipInput').value='';$('slipErr').textContent='';
+  $('ticketSlipStatus1').innerHTML='';
+  $('ticketView1').hidden=false;$('ticketViewPay').hidden=true;$('ticketView2').hidden=true;$('ticketView3').hidden=true;
+  $('ticketPopup').hidden=false;
+}
+function closeTicketPopup(){$('ticketPopup').hidden=true}
+$('ticketClose').addEventListener('click',closeTicketPopup);
+$('ticketClose2').addEventListener('click',closeTicketPopup);
+
+const IG_URL='https://www.instagram.com/rxrsu40.official/?utm_source=ig_web_button_share_sheet';
+function paymentStatusHTML(b){
+  if(!b||!b.slipId)return '';
+  const status=b.paymentStatus||'awaiting';
+  if(status==='verified')return `<p class="statusVerified">${esc(T('status_verified'))}</p>`;
+  if(status==='problem')return `<p class="statusProblem">${esc(T('status_problem_prefix'))}<a href="${IG_URL}" target="_blank" rel="noopener">Instagram: rxrsu40.official</a></p>`;
+  return `<p class="waitNote">${esc(T('status_awaiting_full'))}</p>`;
+}
+
+$('goPay').addEventListener('click',()=>{
+  $('ticketView1').hidden=true;$('ticketViewPay').hidden=false;
+});
+$('payBack').addEventListener('click',()=>{
+  $('ticketViewPay').hidden=true;$('ticketView1').hidden=false;
+});
+$('goUploadSlip').addEventListener('click',()=>{
+  $('ticketViewPay').hidden=true;$('ticketView2').hidden=false;
+  $('slipErr').textContent='';$('slipInput').value='';
+});
+$('slipCancel').addEventListener('click',()=>{
+  $('ticketView2').hidden=true;$('ticketViewPay').hidden=false;
+});
+
+function resizeImageIfLarge(file,maxDim){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      URL.revokeObjectURL(url);
+      const w0=img.naturalWidth,h0=img.naturalHeight;
+      if(Math.max(w0,h0)<=maxDim){resolve(file);return}
+      const scale=maxDim/Math.max(w0,h0);
+      const w=Math.round(w0*scale),h=Math.round(h0*scale);
+      const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+      canvas.toBlob(b=>b?resolve(b):reject(new Error('resize failed')),'image/jpeg',0.88);
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('โหลดรูปไม่สำเร็จ'))};
+    img.src=url;
+  });
+}
+
+$('slipInput').addEventListener('change',async()=>{
+  const file=$('slipInput').files&&$('slipInput').files[0];
+  if(!file)return;
+  $('slipErr').textContent='';
+  if(!file.type.startsWith('image/')){showToast(T('err_choose_image'));$('slipInput').value='';return}
+  if(!assetsCap){$('slipErr').textContent=T('err_upload_unavailable');$('slipInput').value='';return}
+  if(!pendingSeats.length){$('slipErr').textContent=T('err_booking_failed');return}
+  $('slipInput').disabled=true;
+  let uploadedId=null;
+  try{
+    const blob=await resizeImageIfLarge(file,1600);
+    const up=await assetsCap.upload(blob);
+    uploadedId=up.id;
+    const res=await createBooking(pendingShow,pendingSeats,{username:auth.name,userKey:auth.key,slipId:up.id,slipAt:Date.now(),paymentStatus:'awaiting'});
+    if(res.code){
+      sel.clear();pendingSeats=[];
+      const s=findShow(res.data.show);
+      showToast(T('msg_slip_uploaded'));
+      $('pCode3').textContent=res.code;
+      $('payStatusText3').innerHTML=paymentStatusHTML(res.data);
+      $('pPickup3').innerHTML=T('ticket_pickup',{date:esc(fmtShowDate(s&&s.date)),time:esc(pickupTime(s))});
+      fireConfetti();
+      $('ticketView2').hidden=true;$('ticketView3').hidden=false;
+      renderUser();
+    }else{
+      if(uploadedId){try{await assetsCap.delete(uploadedId)}catch(e){}}
+      if(res.clash){
+        res.clash.forEach(sId=>sel.delete(sId));
+        showToast(T('err_seat_taken_msg',{seats:res.clash.join(', ')}));
+        closeTicketPopup();
+        renderUser();
+      }else if(res.full){$('slipErr').textContent=T('err_booking_full')}
+      else if(res.busy){$('slipErr').textContent=T('err_booking_busy')}
+      else{$('slipErr').textContent=T('err_booking_failed')}
+    }
+  }catch(e){
+    console.error(e);
+    if(uploadedId){try{await assetsCap.delete(uploadedId)}catch(e2){}}
+    $('slipErr').textContent=T('err_upload_failed');
+  }
+  finally{$('slipInput').disabled=false;$('slipInput').value=''}
+});
+
+$('loginBtn').addEventListener('click',doAuth);
+[$('uname'),$('upin'),$('upin2')].forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter')doAuth()}));
+
+async function doAuth(){
+  const uname=$('uname').value,pin=$('upin').value,pin2=$('upin2').value;
+  $('loginErr').textContent='';
+  if(!uname.trim()){$('loginErr').textContent=T('err_fill_username');return}
+  if(!/^[0-9]{6}$/.test(pin)){$('loginErr').textContent=T('err_pin_format');return}
+  if(authMode==='register'&&pin!==pin2){$('loginErr').textContent=T('err_pin_mismatch');return}
+  if(authMode==='register'&&!/^[A-Za-z0-9_ .]+$/.test(uname.trim())){$('loginErr').textContent=T('err_username_english');return}
+  const key=norm(uname);
+  if(!db){$('loginErr').textContent=T('err_db_not_ready');return}
+  $('loginBtn').disabled=true;$('loginBtn').textContent=T('loginbtn_checking');
+  try{
+    if(key===ADMIN_KEY){
+      if(authMode==='register'){$('loginErr').textContent=T('err_username_reserved');return}
+      if(pin!==ADMIN_PIN){$('loginErr').textContent=T('err_wrong_password');return}
+      auth={key,name:'Admin01',role:'admin'};
+    }else{
+      const ref=db.collection('users').doc(key);
+      const snap=await ref.get();
+      if(authMode==='login'){
+        if(!snap.exists){$('loginErr').textContent=T('err_no_account');return}
+        if(snap.data().pin!==pin){$('loginErr').textContent=T('err_wrong_password');return}
+        auth={key,name:snap.data().name,role:'user'};
+      }else{
+        if(snap.exists){$('loginErr').textContent=T('err_username_taken');return}
+        await ref.set({name:uname.trim(),pin,createdAt:Date.now()});
+        auth={key,name:uname.trim(),role:'user'};
+      }
+    }
+    try{localStorage.setItem(LKEY,JSON.stringify(auth))}catch(e){}
+    showApp();
+  }catch(e){console.error(e);$('loginErr').textContent=T('err_generic')}
+  finally{$('loginBtn').disabled=false;$('loginBtn').textContent=authMode==='login'?T('loginbtn_login'):T('loginbtn_register')}
+}
+
+$('logout').addEventListener('click',()=>{
+  auth=null;try{localStorage.removeItem(LKEY)}catch(e){}
+  $('app').hidden=true;$('login').hidden=true;$('movieSelect').hidden=false;$('guestLogin').hidden=false;
+  [...movieGrid.children].forEach(t=>t.classList.remove('active'));
+  $('uname').value='';$('upin').value='';$('tagline').textContent=T('tagline_default');
+  document.body.classList.add('halloween');
+});
+
+function takenMap(show){const m={};for(const c in bookings){const b=bookings[c];if(sameShow(b.show,show))(b.seats||[]).forEach(s=>m[s]=c)}return m}
+
+function toggleSeat(id){
+  const tk=takenMap(currentShow);
+  if(tk[id])return;
+  sel.has(id)?sel.delete(id):sel.add(id);
+  renderUser();
+}
+
+function renderUser(){
+  if(auth&&auth.role==='admin')return;
+  const sw=$('showSwitch');
+  sw.innerHTML=SHOWS.map(s=>`<option value="${esc(s.id)}" ${sameShow(s.id,currentShow)?'selected':''}>${esc(showLabel(s))}</option>`).join('');
+  const cur=findShow(currentShow),bp=$('bookingPoster');
+  if(cur){
+    bp.style.background=cur.posterId?'':'linear-gradient(135deg,var(--sel),var(--btn))';
+    bp.innerHTML=cur.posterId?`<img src="/_blob/${esc(cur.posterId)}" alt="${esc(T('poster_alt_prefix')+cur.title)}">`:esc(cur.letter||'?');
+  }else{
+    bp.style.background='';bp.innerHTML='';
+  }
+  const tk=takenMap(currentShow);
+  sel.forEach(id=>{if(tk[id])sel.delete(id)});
+  document.querySelectorAll('#grid .seat').forEach(b=>{
+    const id=b.dataset.id,t=!!tk[id],s=sel.has(id);
+    b.classList.toggle('taken',t);b.classList.toggle('sel',s);
+    b.setAttribute('tabindex',t?'-1':'0');
+    b.setAttribute('aria-label',T('aria_seat',{id,status:t?T('aria_taken'):s?T('aria_selected'):T('aria_available')}));
+    b.setAttribute('aria-pressed',s);
+  });
+  const n=sel.size;
+  $('seats').textContent=n?sortSeats(sel).join(', '):T('panel_seats_empty');
+  $('count').textContent=T('panel_count_value',{n});
+  $('total').textContent=T('baht_value',{n:num(n*PRICE)});
+  $('book').disabled=!n;
+  $('seatsSummary').textContent=T('seats_summary',{free:num(TOTAL_SEATS-Object.keys(tk).length),total:num(TOTAL_SEATS),price:num(PRICE)});
+
+  const mineEl=$('mine');mineEl.innerHTML='';
+  if(!auth){mineEl.innerHTML=`<p class="empty">${T('guest_mybookings_prompt')}</p>`;return}
+  const mine=Object.entries(bookings).filter(([,b])=>b.userKey===auth.key).sort((a,b)=>a[0]<b[0]?1:-1);
+  if(!mine.length){mineEl.innerHTML=`<p class="empty">${T('mybookings_empty')}</p>`}
+  mine.forEach(([code,b])=>{
+    const card=document.createElement('div');card.className='card';
+    const slip=b.slipId?`<div style="margin-top:8px">${paymentStatusHTML(b)}<img class="slipThumb" src="/_blob/${esc(b.slipId)}" alt=""></div>`:'';
+    card.innerHTML=`<div><span class="code2">${code}</span><div class="meta">${showLabel(findShow(b.show))} · ${T('ticket_seats_prefix')}${b.seats.join(', ')} · ${T('baht_value',{n:num(b.total)})}<br>${T('ticket_booked_at')}${fmtDate(b.at)}</div>${slip}</div>`;
+    const cancel=document.createElement('button');cancel.className='mini danger';cancel.textContent=T('cancel_btn');
+    cancel.addEventListener('click',()=>cancelBooking(code));
+    card.appendChild(cancel);
+    mineEl.appendChild(card);
+  });
+}
+
+async function withLock(fn){
+  const lock=db.doc('meta/lock');
+  let ok=false;
+  for(let i=0;i<12&&!ok;i++){
+    ok=(await lock.acquire({holder:auth.key+':'+Math.random(),ttlMs:4000})).acquired;
+    if(!ok)await sleep(350+Math.random()*350);
+  }
+  if(!ok)return {busy:true};
+  return fn();
+}
+
+async function createBooking(show,seats,meta){
+  return withLock(async()=>{
+    const snap=await db.collection('bookings').get();
+    const cur={};snap.docs.forEach(d=>cur[d.id]=d.data());
+    const used=new Set(Object.entries(cur).filter(([,b])=>sameShow(b.show,show)).flatMap(([,b])=>b.seats||[]));
+    const clash=seats.filter(s=>used.has(s));
+    if(clash.length){bookings=cur;return {clash}}
+    let n=0;Object.keys(cur).forEach(k=>{n=Math.max(n,parseInt(k.slice(3),10)||0)});
+    n++;if(n>999)return {full:true};
+    const code='PD-'+pad(n);
+    const data={seats,total:seats.length*PRICE,show,at:Date.now(),...meta};
+    await db.doc('bookings/'+code).set(data);
+    bookings={...cur,[code]:data};
+    return {code,data};
+  });
+}
+
+let pendingShow=null,pendingSeats=[];
+$('book').addEventListener('click',()=>{
+  if(!sel.size)return;
+  if(!auth){showToast(T('guest_book_toast'));goToLogin();return}
+  pendingShow=currentShow;pendingSeats=sortSeats(sel);
+  openPendingPopup(pendingShow,pendingSeats);
+});
+
+async function cancelBooking(code){
+  if(!await showConfirm(T('confirm_cancel_booking',{code})))return;
+  try{await db.doc('bookings/'+code).delete();showToast(T('msg_booking_cancelled',{code}))}catch(e){console.error(e);showToast(T('err_cancel_failed'))}
+}
+
+function renderUsers(){
+  if(!auth||auth.role!=='admin')return;
+  const counts={};Object.values(bookings).forEach(b=>{counts[b.userKey]=(counts[b.userKey]||0)+1});
+  const rows=Object.entries(users).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0));
+  const tb=$('userRows');tb.innerHTML='';
+  $('userEmpty').hidden=!!rows.length;
+  rows.forEach(([key,u])=>{
+    const tr=document.createElement('tr');
+    const count=counts[key]||0;
+    tr.innerHTML=`<td>${esc(u.name||key)}</td><td>${esc(u.pin||'-')}</td><td>${fmtDate(u.createdAt)}</td><td>${count}</td><td><button type="button" class="mini danger del-user">${T('deleteaccount_btn')}</button></td>`;
+    tr.querySelector('.del-user').addEventListener('click',async()=>{
+      const name=esc(u.name||key);
+      const msg=count
+        ?T('confirm_delete_account',{name,count})
+        :T('confirm_delete_account_simple',{name});
+      if(!await showConfirm(msg))return;
+      try{
+        await db.doc('users/'+key).delete();
+        showToast(T('msg_account_deleted'));
+      }catch(e){console.error(e);showToast(T('err_account_delete_failed'))}
+    });
+    tb.appendChild(tr);
+  });
+}
+
+function renderAdmin(){
+  if(!auth||auth.role!=='admin')return;
+  const rows=Object.entries(bookings).sort((a,b)=>a[0]<b[0]?1:-1);
+  $('adminSummary').textContent=T('admin_summary',{count:rows.length,total:T('baht_value',{n:num(rows.reduce((s,[,b])=>s+b.total,0))})});
+  const tb=$('adminRows');tb.innerHTML='';
+  $('adminEmpty').hidden=!!rows.length;
+  rows.forEach(([code,b])=>{
+    const tr=document.createElement('tr');
+    const slipCell=b.slipId?`<a href="/_blob/${esc(b.slipId)}" target="_blank" rel="noopener"><img class="slipThumb" style="width:40px;max-width:40px;margin:0" src="/_blob/${esc(b.slipId)}" alt=""></a>`:T('slip_none');
+    tr.innerHTML=`<td><b>${code}</b></td><td>${showLabel(findShow(b.show))}</td><td>${b.staffBooking?T('staff_booking_label'):(b.username||'-')}</td><td>${b.seats.join(', ')}</td><td>${num(b.total)}</td><td>${fmtDate(b.at)}</td><td>${slipCell}</td>`;
+    const statusTd=document.createElement('td');
+    if(b.slipId){
+      const statusSel=document.createElement('select');
+      statusSel.style.cssText="font:500 13px 'Prompt',sans-serif;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)";
+      const cur=b.paymentStatus||'awaiting';
+      statusSel.innerHTML=`<option value="awaiting" ${cur==='awaiting'?'selected':''}>${esc(T('status_opt_awaiting'))}</option><option value="verified" ${cur==='verified'?'selected':''}>${esc(T('status_opt_verified'))}</option><option value="problem" ${cur==='problem'?'selected':''}>${esc(T('status_opt_problem'))}</option>`;
+      statusSel.addEventListener('change',async()=>{
+        statusSel.disabled=true;
+        try{await db.doc('bookings/'+code).update({paymentStatus:statusSel.value});showToast(T('msg_status_updated'))}
+        catch(e){console.error(e);showToast(T('err_save_failed'))}
+        finally{statusSel.disabled=false}
+      });
+      statusTd.appendChild(statusSel);
+    }else{
+      statusTd.textContent='-';
+    }
+    tr.appendChild(statusTd);
+    const td=document.createElement('td');td.className='tools';
+    const edit=document.createElement('button');edit.className='mini';edit.textContent=T('edit_btn');
+    edit.addEventListener('click',()=>openEdit(code,b));
+    const del=document.createElement('button');del.className='mini danger';del.textContent=T('delete_btn');
+    del.addEventListener('click',async()=>{if(await showConfirm(T('confirm_delete_booking',{code}))){try{await db.doc('bookings/'+code).delete();showToast(T('msg_booking_deleted',{code}))}catch(e){showToast(T('err_delete_failed'))}}});
+    td.append(edit,del);tr.appendChild(td);
+    tb.appendChild(tr);
+  });
+  renderByShow();
+  renderAdminSeats();
+}
+
+function adminToggleSeat(id){
+  if(!auth||auth.role!=='admin')return;
+  const tk=takenMap(adminSeatShow);
+  if(tk[id]){adminCancelSeat(id,tk[id]);return}
+  adminSel.has(id)?adminSel.delete(id):adminSel.add(id);
+  renderAdminSeats();
+}
+
+async function adminCancelSeat(id,code){
+  const b=bookings[code];
+  if(!b)return;
+  if(!await showConfirm(T('confirm_admin_cancel_seat',{id,code})))return;
+  try{
+    if(b.seats.length<=1){
+      await db.doc('bookings/'+code).delete();
+    }else{
+      await db.doc('bookings/'+code).update({seats:b.seats.filter(s=>s!==id),total:(b.seats.length-1)*PRICE});
+    }
+    showToast(T('msg_admin_seat_cancelled',{id}));
+  }catch(e){console.error(e);showToast(T('err_cancel_failed'))}
+}
+
+function renderAdminSeats(){
+  if(!auth||auth.role!=='admin')return;
+  if(!adminSeatShow||!findShow(adminSeatShow))adminSeatShow=SHOWS.length?SHOWS[0].id:null;
+  const sw=$('adminShowSwitch');
+  sw.innerHTML=SHOWS.map(s=>`<option value="${esc(s.id)}" ${sameShow(s.id,adminSeatShow)?'selected':''}>${esc(showLabel(s))}</option>`).join('');
+  const tk=takenMap(adminSeatShow);
+  adminSel.forEach(id=>{if(tk[id])adminSel.delete(id)});
+  document.querySelectorAll('#adminGrid .seat').forEach(b=>{
+    const id=b.dataset.id,t=!!tk[id],s=adminSel.has(id);
+    b.classList.toggle('taken',t);b.classList.toggle('sel',s);
+    b.setAttribute('aria-label',T('aria_seat',{id,status:t?T('aria_taken'):s?T('aria_selected'):T('aria_available')}));
+  });
+  $('adminSeatSummary').textContent=T('seats_booked_of',{booked:num(Object.keys(tk).length),total:num(TOTAL_SEATS)});
+  const n=adminSel.size;
+  $('adminSelSummary').textContent=n?T('admin_selected_seats',{seats:sortSeats(adminSel).join(', '),total:T('baht_value',{n:num(n*PRICE)})}):T('admin_no_seats_selected');
+  $('adminBookSeats').disabled=!n;
+}
+$('adminShowSwitch').addEventListener('change',e=>{adminSeatShow=e.target.value;adminSel.clear();renderAdminSeats()});
+$('adminBookSeats').addEventListener('click',async()=>{
+  if(!adminSel.size||!db)return;
+  const list=sortSeats(adminSel);
+  $('adminBookSeats').disabled=true;$('adminBookSeats').textContent=T('book_btn_busy');
+  let res;
+  try{
+    res=await createBooking(adminSeatShow,list,{username:null,userKey:'staff',staffBooking:true});
+  }catch(e){console.error(e);res={err:true}}
+  $('adminBookSeats').textContent=T('admin_book_staff_btn');
+  if(res.code){
+    adminSel.clear();
+    showToast(T('msg_admin_booking_created',{code:res.code}));
+  }else if(res.clash){res.clash.forEach(s=>adminSel.delete(s));showToast(T('err_seat_taken_msg',{seats:res.clash.join(', ')}))}
+  else if(res.full){showToast(T('err_booking_full'))}
+  else if(res.busy){showToast(T('err_booking_busy'))}
+  else{showToast(T('err_booking_failed'))}
+  renderAdminSeats();
+});
+
+function renderByShow(){
+  if(!auth||auth.role!=='admin')return;
+  const tb=$('byShowRows');tb.innerHTML='';
+  $('byShowEmpty').hidden=!!SHOWS.length;
+  const totalSeats=TOTAL_SEATS;
+  SHOWS.forEach(s=>{
+    const rows=Object.entries(bookings).filter(([,b])=>sameShow(b.show,s.id));
+    const seats=rows.flatMap(([,b])=>b.seats||[]);
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${showLabel(s)}</td><td>${T('seats_booked_of',{booked:num(seats.length),total:num(totalSeats)})}</td><td>${num(rows.length)}</td><td>${seats.length?esc(sortSeats(seats).join(', ')):T('no_seats_booked')}</td>`;
+    tb.appendChild(tr);
+  });
+}
+
+$('clearAll').addEventListener('click',async()=>{
+  const codes=Object.keys(bookings);
+  if(!codes.length){showToast(T('msg_no_bookings_to_clear'));return}
+  if(!await showConfirm(T('confirm_clear_all',{count:codes.length})))return;
+  $('clearAll').disabled=true;$('clearAll').textContent=T('clearall_busy');
+  try{
+    await Promise.all(codes.map(c=>db.doc('bookings/'+c).delete()));
+    showToast(T('msg_cleared_all'));
+  }catch(e){console.error(e);showToast(T('err_clear_partial'))}
+  finally{$('clearAll').disabled=false;$('clearAll').textContent=T('clearall_btn')}
+});
+
+let editingCode=null;
+function openEdit(code,b){
+  editingCode=code;$('editCode').textContent=code;$('editErr').textContent='';
+  $('editSeats').value=b.seats.join(',');
+  const sel=$('editShow');sel.innerHTML=SHOWS.map(s=>`<option value="${esc(s.id)}" ${sameShow(s.id,b.show)?'selected':''}>${esc(showLabel(s))}</option>`).join('');
+  $('overlay').hidden=false;
+}
+$('editCancel').addEventListener('click',()=>{$('overlay').hidden=true});
+$('editSave').addEventListener('click',async()=>{
+  const raw=$('editSeats').value.toUpperCase().split(',').map(s=>s.trim()).filter(Boolean);
+  const show=$('editShow').value;
+  const valid=raw.every(isValidSeatId);
+  if(!raw.length||!valid){$('editErr').textContent=T('err_seat_format');return}
+  const used=new Set(Object.entries(bookings).filter(([c,b])=>c!==editingCode&&sameShow(b.show,show)).flatMap(([,b])=>b.seats));
+  const clash=raw.filter(s=>used.has(s));
+  if(clash.length){$('editErr').textContent=T('err_seat_clash',{seats:clash.join(', ')});return}
+  try{
+    const old=bookings[editingCode];
+    await db.doc('bookings/'+editingCode).set({...old,seats:sortSeats(raw),show,total:raw.length*PRICE});
+    $('overlay').hidden=true;
+  }catch(e){console.error(e);$('editErr').textContent=T('err_save_failed')}
+});
+
+function setLang(l){
+  LANG=l;
+  try{localStorage.setItem('rx-lang',l)}catch(e){}
+  applyStaticI18n();
+  renderMovieGrid();
+  if(!$('login').hidden)setAuthMode(authMode);
+  if(!$('app').hidden){
+    $('tagline').textContent=(auth&&auth.role==='admin')?T('tagline_admin'):T('tagline_booking')+showLabel(findShow(currentShow));
+    if(auth&&auth.role==='admin'){renderAdmin();renderMovieForms();renderUsers()}else{renderUser()}
+  }else{
+    $('tagline').textContent=T('tagline_default');
+  }
+}
+$('langToggle').addEventListener('click',()=>setLang(LANG==='th'?'en':'th'));
+applyStaticI18n();
+
+$('introClose').addEventListener('click',()=>{$('introModal').hidden=true});
+
+let audioCtx=null;
+function getAudioCtx(){
+  if(!audioCtx){
+    try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){audioCtx=null}
+  }
+  return audioCtx;
+}
+function unlockAudio(){const c=getAudioCtx();if(c&&c.state==='suspended')c.resume().catch(()=>{})}
+document.addEventListener('pointerdown',unlockAudio,{once:true,passive:true});
+document.addEventListener('keydown',unlockAudio,{once:true});
+unlockAudio();
+
+/* Buzzing-lightbulb flicker sound, timed to match the neonFlicker CSS keyframes
+   (0%,19%,20%,21%,23%,54%,55%,56%,100% over 2.2s) */
+function playFlickerSound(){
+  const ctx=getAudioCtx();
+  if(!ctx||ctx.state!=='running')return;
+  const now=ctx.currentTime,dur=2.2;
+  const master=ctx.createGain();
+  master.gain.value=0;
+  master.connect(ctx.destination);
+
+  const hum=ctx.createOscillator();
+  hum.type='sawtooth';hum.frequency.value=120;
+  const humGain=ctx.createGain();humGain.gain.value=0.06;
+  hum.connect(humGain);humGain.connect(master);
+  hum.start(now);hum.stop(now+dur+0.4);
+
+  const g=master.gain;
+  g.cancelScheduledValues(now);
+  g.setValueAtTime(0,now);
+  g.linearRampToValueAtTime(0.5,now+0.05);
+  g.setValueAtTime(0.5,now+dur*0.19);
+  g.linearRampToValueAtTime(0.08,now+dur*0.20);
+  g.linearRampToValueAtTime(0.5,now+dur*0.21);
+  g.setValueAtTime(0.5,now+dur*0.23);
+  g.setValueAtTime(0.5,now+dur*0.54);
+  g.linearRampToValueAtTime(0.08,now+dur*0.55);
+  g.linearRampToValueAtTime(0.5,now+dur*0.56);
+  g.setValueAtTime(0.5,now+dur);
+  g.linearRampToValueAtTime(0,now+dur+0.35);
+
+  function crackle(t){
+    const n=Math.floor(ctx.sampleRate*0.06);
+    const buf=ctx.createBuffer(1,n,ctx.sampleRate);
+    const data=buf.getChannelData(0);
+    for(let i=0;i<n;i++)data[i]=(Math.random()*2-1)*(1-i/n);
+    const src=ctx.createBufferSource();src.buffer=buf;
+    const bp=ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=1800;bp.Q.value=.8;
+    const cg=ctx.createGain();cg.gain.value=.25;
+    src.connect(bp);bp.connect(cg);cg.connect(master);
+    src.start(t);src.stop(t+0.06);
+  }
+  crackle(now+dur*0.195);
+  crackle(now+dur*0.545);
+}
+
+/* ---- General UI sound effects (synthesized, no external audio files) ---- */
+function tone(freq,startT,dur,{type='sine',peak=0.18,attack=0.008,decay=0.09,filterFreq=null}={}){
+  const ctx=getAudioCtx();if(!ctx)return;
+  const osc=ctx.createOscillator();osc.type=type;osc.frequency.setValueAtTime(freq,startT);
+  const g=ctx.createGain();g.gain.setValueAtTime(0,startT);
+  g.gain.linearRampToValueAtTime(peak,startT+attack);
+  g.gain.exponentialRampToValueAtTime(0.0001,startT+attack+decay+dur);
+  if(filterFreq){
+    const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=filterFreq;
+    osc.connect(lp);lp.connect(g);
+  }else{
+    osc.connect(g);
+  }
+  g.connect(ctx.destination);
+  osc.start(startT);osc.stop(startT+attack+decay+dur+0.05);
+  return osc;
+}
+function playTick(){
+  const ctx=getAudioCtx();if(!ctx)return;const t=ctx.currentTime;
+  tone(1600,t,0.006,{type:'sine',peak:.09,attack:.002,decay:.02,filterFreq:4000});
+  tone(2400,t+0.001,0.004,{type:'sine',peak:.04,attack:.001,decay:.015,filterFreq:6000});
+}
+function playThunk(){
+  const ctx=getAudioCtx();if(!ctx)return;const t=ctx.currentTime;
+  tone(440,t,0.02,{type:'sine',peak:.16,attack:.004,decay:.09,filterFreq:2500});
+  tone(660,t+0.05,0.02,{type:'sine',peak:.13,attack:.004,decay:.1,filterFreq:3000});
+}
+function playDanger(){
+  const ctx=getAudioCtx();if(!ctx)return;const t=ctx.currentTime;
+  const osc=ctx.createOscillator();osc.type='sine';
+  osc.frequency.setValueAtTime(320,t);osc.frequency.exponentialRampToValueAtTime(140,t+0.14);
+  const g=ctx.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.16,t+.006);g.gain.exponentialRampToValueAtTime(.0001,t+.18);
+  osc.connect(g);g.connect(ctx.destination);osc.start(t);osc.stop(t+.2);
+}
+function playPop(up){
+  const ctx=getAudioCtx();if(!ctx)return;const t=ctx.currentTime;
+  const osc=ctx.createOscillator();osc.type='sine';
+  const f0=up?520:380,f1=up?760:280;
+  osc.frequency.setValueAtTime(f0,t);osc.frequency.exponentialRampToValueAtTime(f1,t+0.05);
+  const g=ctx.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.15,t+.004);g.gain.exponentialRampToValueAtTime(.0001,t+.09);
+  osc.connect(g);g.connect(ctx.destination);osc.start(t);osc.stop(t+.1);
+}
+function playWhoosh(){
+  const ctx=getAudioCtx();if(!ctx)return;const t=ctx.currentTime;
+  const osc=ctx.createOscillator();osc.type='sine';
+  osc.frequency.setValueAtTime(300,t);osc.frequency.exponentialRampToValueAtTime(900,t+0.13);
+  const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.setValueAtTime(1200,t);lp.frequency.exponentialRampToValueAtTime(4000,t+0.13);
+  const g=ctx.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.12,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.19);
+  osc.connect(lp);lp.connect(g);g.connect(ctx.destination);osc.start(t);osc.stop(t+.2);
+}
+function playToastSound(){
+  const ctx=getAudioCtx();if(!ctx)return;const t=ctx.currentTime;
+  tone(1050,t,0.02,{type:'sine',peak:.11,attack:.004,decay:.09,filterFreq:5000});
+  tone(1400,t+0.055,0.02,{type:'sine',peak:.09,attack:.004,decay:.1,filterFreq:5000});
+}
+function playSuccessChime(){
+  const ctx=getAudioCtx();if(!ctx)return;const t=ctx.currentTime;
+  [659.25,987.77,1318.5].forEach((f,i)=>{
+    tone(f,t+i*0.075,0.05,{type:'sine',peak:.13,attack:.004,decay:.16,filterFreq:6000});
+    tone(f*2,t+i*0.075,0.03,{type:'sine',peak:.04,attack:.004,decay:.1,filterFreq:8000});
+  });
+}
+
+
+document.addEventListener('click',e=>{
+  const seat=e.target.closest('.seat');
+  if(seat){if(!seat.classList.contains('taken'))playPop(seat.classList.contains('sel'));return}
+  const poster=e.target.closest('.poster');
+  if(poster){playWhoosh();return}
+  const danger=e.target.closest('.danger,.cancel,#logout,#splashSkip');
+  if(danger){playDanger();return}
+  const primary=e.target.closest('button.primary,.save');
+  if(primary){playThunk();return}
+  const anyBtn=e.target.closest('button,.tab,select');
+  if(anyBtn){playTick()}
+});
+document.addEventListener('change',e=>{
+  if(e.target.closest('select'))playTick();
+});
+
+(function(){
+  const text='PharmaDay\nCinema Event';
+  const titleEl=$('splashTitle');
+  let delay=0;
+  [...text].forEach(ch=>{
+    if(ch==='\n'){titleEl.appendChild(document.createElement('br'));return}
+    if(ch===' '){titleEl.appendChild(document.createTextNode(' '));return}
+    const span=document.createElement('span');
+    span.textContent=ch;
+    span.setAttribute('aria-hidden','true');
+    span.style.animationDelay=delay.toFixed(2)+'s';
+    titleEl.appendChild(span);
+    delay+=0.045;
+  });
+  const revealDone=(delay+0.5)*1000;
+  setTimeout(()=>{
+    titleEl.classList.add('flicker');
+    if(!window.matchMedia||!window.matchMedia('(prefers-reduced-motion: reduce)').matches)playFlickerSound();
+  },revealDone);
+  let closed=false;
+  function closeSplash(){
+    if(closed)return;closed=true;
+    $('splash').hidden=true;
+    $('introModal').hidden=false;
+  }
+  $('splash').addEventListener('click',closeSplash);
+  $('splashSkip').addEventListener('click',e=>{e.stopPropagation();closeSplash()});
+  setTimeout(closeSplash,revealDone+2400);
+})();
+
+(async()=>{
+  try{db=await claude.use('db')}catch(e){db=null}
+  if(!db){$('dbstate').textContent=T('err_db_connect_failed');return}
+  try{assetsCap=await claude.use('assets')}catch(e){assetsCap=null}
+  db.collection('bookings').onSnapshot(s=>{
+    const b={};s.docs.forEach(d=>b[d.id]=d.data());bookings=b;
+    if(!$('app').hidden){if(auth&&auth.role==='admin'){renderAdmin();renderUsers()}else renderUser()}
+  },e=>console.error(e));
+  db.collection('users').onSnapshot(s=>{
+    const u={};s.docs.forEach(d=>{u[d.id]=d.data()});users=u;
+    if(auth&&auth.role==='admin'&&!$('app').hidden)renderUsers();
+  },e=>console.error(e));
+  db.doc('meta/payment').onSnapshot(doc=>{
+    if(doc&&doc.exists){
+      const data=doc.data();
+      if(data&&data.qrId){paymentQrId=data.qrId;applyQrImages()}
+    }
+  },e=>console.error(e));
+  let moviesSeeded=false;
+  db.collection('movies').onSnapshot(s=>{
+    if(!s.docs.length){
+      if(!moviesSeeded){
+        moviesSeeded=true;
+        const seedAt=Date.now();
+        db.doc('movies/0').set({title:'เรื่อง A',date:DEFAULT_DATE,time:'13:00 น.',letter:'A',posterId:null,duration:120,order:seedAt}).catch(e=>console.error(e));
+        db.doc('movies/1').set({title:'เรื่อง B',date:DEFAULT_DATE,time:'16:00 น.',letter:'B',posterId:null,duration:120,order:seedAt+1}).catch(e=>console.error(e));
+      }
+      return;
+    }
+    const list=[];s.docs.forEach(d=>{list.push({id:d.id,posterId:null,...d.data()})});
+    list.sort((a,b)=>(a.order||0)-(b.order||0));
+    SHOWS=list;
+    renderMovieGrid();
+    if(!$('app').hidden){
+      if(auth&&auth.role==='admin'){renderAdmin();renderMovieForms();renderUsers()}else renderUser();
+    }
+  },e=>console.error(e));
+})();
+</script>
+</body>
+</html>

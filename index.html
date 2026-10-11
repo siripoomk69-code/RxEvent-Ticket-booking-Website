@@ -629,7 +629,6 @@ const STR={
   pay_title:['ชำระเงินผ่าน PromptPay','Pay via PromptPay'],
   pay_amount_prefix:['ยอดที่ต้องชำระ ','Amount due '],
   pay_slip_label:['อัปโหลดสลิปการโอนเงิน','Upload transfer slip'],
-  pay_wait_verify:['หากท่านชำระเงินแล้ว กรุณารอการตรวจสอบจากเจ้าหน้าที่ เวลาทำการ 9:00 น.-20:00 น.','If you have paid, please wait for staff verification. Office hours 9:00 AM\u20138:00 PM.'],
   msg_slip_uploaded:['อัปโหลดสลิปแล้ว','Slip uploaded'],
   th_slip:['สลิป','Slip'],
   slip_none:['ยังไม่อัปโหลด','Not uploaded yet'],
@@ -641,7 +640,6 @@ const STR={
   pay_upload_title:['อัปโหลดสลิปการโอนเงิน','Upload transfer slip'],
   cancel_upload_btn:['← ยกเลิกการอัปโหลด','← Cancel upload'],
   pay_status_title:['สถานะการชำระเงิน','Payment status'],
-  status_awaiting:['รอตรวจสอบ','Awaiting verification'],
   status_awaiting_full:['รอตรวจสอบการชำระเงิน','Awaiting payment verification'],
   status_verified:['ตรวจสอบการชำระเงินแล้ว','Payment verified'],
   status_problem_prefix:['การชำระเงินมีปัญหา โปรดติดต่อ Instagram: ','Payment issue, please contact Instagram: '],
@@ -1738,52 +1736,5 @@ document.addEventListener('change',e=>{
   },e=>console.error(e));
 })();
 </script>
-<!-- สร้างกล่องเอาไว้สำหรับนำข้อมูลไปแสดงผล -->
-<div id="loading">กำลังโหลดข้อมูล...</div>
-<ul id="user-list"></ul>
-<script>
-  async function loadUsers() {
-    try {
-      // 1. ยิง Request ไปที่หลังบ้าน
-      const response = await fetch('/.netlify/functions/get-data');
-      
-      // 2. แปลงข้อมูลที่ได้กลับมาให้เป็นรูปแบบ JSON (ที่โค้ดอ่านเข้าใจ)
-      const result = await response.json();
-
-      if (result.success) {
-        // เมื่อได้ข้อมูลสำเร็จ ให้ส่งข้อมูลไปจัดการต่อใน ขั้นตอนที่ 3
-        displayUsers(result.data);
-      } else {
-        document.getElementById('loading').innerText = "เกิดข้อผิดพลาด: " + result.error;
-      }
-    } catch (error) {
-      document.getElementById('loading').innerText = "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้";
-      console.error(error);
-    }
-  }
-</script>
-<script>
-  function displayUsers(users) {
-    const listElement = document.getElementById('user-list');
-    const loadingElement = document.getElementById('loading');
-    
-    // ซ่อนคำว่า "กำลังโหลดข้อมูล..."
-    loadingElement.style.display = 'none'; 
-
-    // วนลูปนำข้อมูลแต่ละแถวมาแสดง
-    users.forEach(user => {
-      const li = document.createElement('li');
-      
-      // 💡 เปลี่ยนตรง user.name ให้ตรงกับชื่อ Column ในฐานข้อมูลของคุณนะครับ
-      li.innerText = `ชื่อ: ${user.name} | เวลา: ${user.current_time}`; 
-      
-      listElement.appendChild(li);
-    });
-  }
-
-  // สั่งให้ฟังก์ชัน fetch ทำงานทันทีที่เปิดหน้าเว็บขึ้นมา
-  loadUsers();
-</script>
-
 </body>
 </html>

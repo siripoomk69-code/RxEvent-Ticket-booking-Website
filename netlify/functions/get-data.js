@@ -1,21 +1,32 @@
-import postgres from 'postgres';
+const postgres = require('postgres');
 
-// เชื่อมต่อฐานข้อมูลโดยดึงค่าอัตโนมัติจาก Netlify Database
+// ตรวจสอบและดึงค่า Database Connection จาก Netlify Environment
 const sql = postgres(process.env.NETLIFY_DB_URL);
 
-export const handler = async (event, context) => {
+exports.handler = async (event, context) => {
   try {
-    // 💡 แก้ไขคำสั่ง SQL ตรงนี้ตามชื่อตาราง (Table) ของคุณ เช่น SELECT * FROM users
-    const data = await sql`SELECT NOW() as current_time`; 
+    // โค้ดสำหรับดึงรายชื่อตารางทั้งหมดในฐานข้อมูล Postgres
+const data = await sql`
+  SELECT table_name 
+  FROM information_schema.tables 
+  WHERE table_schema = 'public'
+`;
+ 
 
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*" 
+      },
       body: JSON.stringify({ success: true, data: data }),
     };
   } catch (error) {
+    // ปริ้น Error จริงออกทาง Terminal ของ VS Code เพื่อวิเคราะห์
+    console.error("❌ Database Error จากหลังบ้าน:", error.message); 
     return {
       statusCode: 500,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ success: false, error: error.message }),
     };
   }

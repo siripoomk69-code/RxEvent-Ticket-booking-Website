@@ -59,6 +59,9 @@ button.primary:disabled{opacity:.5;cursor:not-allowed}
 #grid .seat.taken{cursor:not-allowed;pointer-events:none}
 .seat.taken rect{fill:var(--taken);stroke:var(--taken)}
 .seat.taken text{fill:var(--mute)}
+#grid .seat.pending,#adminGrid .seat.pending{cursor:not-allowed;pointer-events:none}
+.seat.pending rect{fill:var(--pending,#d98c3f);stroke:var(--ink);stroke-dasharray:4 3}
+.seat.pending text{fill:#fff}
 .svgRoom{fill:var(--panel);stroke:var(--line);stroke-width:2}
 .svgLbl{font-size:13px;fill:var(--mute);text-anchor:middle}
 .svgScreen{fill:var(--glow)}
@@ -320,6 +323,7 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
       <div class="legend">
         <span><i style="background:var(--free)"></i><span data-i18n="legend_free">ว่าง</span></span>
         <span><i style="background:var(--sel)"></i><span data-i18n="legend_sel">ที่คุณเลือก</span></span>
+        <span><i style="background:var(--pending,#d98c3f)"></i><span data-i18n="legend_pending">กำลังดำเนินการ</span></span>
         <span><i style="background:var(--taken)"></i><span data-i18n="legend_taken">ถูกจองแล้ว</span></span>
       </div>
       <p class="sub" style="text-align:center" id="seatsSummary"></p>
@@ -593,6 +597,7 @@ const STR={
   legend_free:['ว่าง','Available'],
   legend_sel:['ที่คุณเลือก','Your selection'],
   legend_taken:['ถูกจองแล้ว','Taken'],
+  legend_pending:['กำลังดำเนินการ','In progress'],
   seats_summary:['ว่าง {free} จาก {total} ที่นั่ง · ที่นั่งละ {price} บาท','{free} of {total} seats available · {price} THB per seat'],
   panel_seats_label:['ที่นั่งที่เลือก','Selected seats'],
   panel_seats_empty:['ยังไม่ได้เลือก','None selected'],
@@ -750,6 +755,8 @@ const STR={
   err_booking_failed:['จองไม่สำเร็จ กรุณาลองใหม่อีกครั้ง','Booking failed, please try again'],
   aria_seat:['ที่นั่ง {id} {status}','Seat {id} {status}'],
   aria_taken:['ถูกจองแล้ว','taken'],
+  aria_pending:['กำลังดำเนินการ','in progress'],
+  err_seat_pending_msg:['ที่นั่ง {seats} กำลังมีผู้อื่นทำรายการอยู่ กรุณาเลือกที่นั่งอื่น','Seat(s) {seats} are being booked by someone else, please choose other seats'],
   aria_selected:['เลือกอยู่','selected'],
   aria_available:['ว่าง','available'],
   poster_alt_prefix:['โปสเตอร์ ','Poster for '],
@@ -771,7 +778,10 @@ function applyStaticI18n(){
   if(lt)lt.textContent=LANG==='en'?'TH':'EN';
 }
 
-let db=null,auth=null,assetsCap=null,bookings={},users={},sel=new Set(),currentShow=null;
+let db=null,auth=null,assetsCap=null,bookings={},users={},holds={},sel=new Set(),currentShow=null;
+const HOLD_TTL_MS=10*60_000,HOLD_REFRESH_MS=2*60_000;
+const myHoldId='h-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);
+let holdActive=false,holdTimer=null;
 let adminSeatShow=null,adminSel=new Set();
 let paymentQrId='9460d08263e9ca75723896305ecce297';
 function applyQrImages(){
@@ -1114,7 +1124,7 @@ function openPendingPopup(show,seats){
   $('ticketView1').hidden=false;$('ticketViewPay').hidden=true;$('ticketView2').hidden=true;$('ticketView3').hidden=true;
   $('ticketPopup').hidden=false;
 }
-function closeTicketPopup(){$('ticketPopup').hidden=true}
+function closeTicketPopup(){$('ticketPopup').hidden=true;releaseHold()}
 $('ticketClose').addEventListener('click',closeTicketPopup);
 $('ticketClose2').addEventListener('click',closeTicketPopup);
 
@@ -1192,6 +1202,11 @@ $('slipInput').addEventListener('change',async()=>{
         showToast(T('err_seat_taken_msg',{seats:res.clash.join(', ')}));
         closeTicketPopup();
         renderUser();
+      }else if(res.pending){
+        res.pending.forEach(sId=>sel.delete(sId));
+        showToast(T('err_seat_pending_msg',{seats:res.pending.join(', ')}));
+        closeTicketPopup();
+        renderUser();
       }else if(res.full){$('slipErr').textContent=T('err_booking_full')}
       else if(res.busy){$('slipErr').textContent=T('err_booking_busy')}
       else{$('slipErr').textContent=T('err_booking_failed')}
@@ -1242,6 +1257,7 @@ async function doAuth(){
 }
 
 $('logout').addEventListener('click',()=>{
+  releaseHold();
   auth=null;try{localStorage.removeItem(LKEY)}catch(e){}
   $('app').hidden=true;$('login').hidden=true;$('movieSelect').hidden=false;$('guestLogin').hidden=false;
   [...movieGrid.children].forEach(t=>t.classList.remove('active'));
@@ -1250,10 +1266,48 @@ $('logout').addEventListener('click',()=>{
 });
 
 function takenMap(show){const m={};for(const c in bookings){const b=bookings[c];if(sameShow(b.show,show))(b.seats||[]).forEach(s=>m[s]=c)}return m}
+// Seats other bookers are currently paying for ("in progress"); our own hold is excluded.
+function pendingMap(show){const m={};for(const h in holds){if(h===myHoldId)continue;const d=holds[h];if(sameShow(d.show,show))(d.seats||[]).forEach(s=>m[s]=h)}return m}
+
+/* Seat holds: chosen seats are marked "in progress" while the booker is in the payment flow,
+   and released (back to available) when they close it, leave the page, or the hold expires. */
+function holdData(){return {show:pendingShow,seats:pendingSeats,userKey:auth&&auth.key,ttlMs:HOLD_TTL_MS}}
+async function placeHold(show,seats){
+  return withLock(async()=>{
+    const [bSnap,hSnap]=await Promise.all([db.collection('bookings').get(),db.collection('holds').get()]);
+    const cur={};bSnap.docs.forEach(d=>cur[d.id]=d.data());bookings=cur;
+    const hs={};hSnap.docs.forEach(d=>hs[d.id]=d.data());holds=hs;
+    const used=takenMap(show);
+    const clash=seats.filter(s=>used[s]);
+    if(clash.length)return {clash};
+    const held=pendingMap(show);
+    const pending=seats.filter(s=>held[s]);
+    if(pending.length)return {pending};
+    await db.doc('holds/'+myHoldId).set({show,seats,userKey:auth&&auth.key,ttlMs:HOLD_TTL_MS});
+    return {ok:true};
+  });
+}
+function startHoldRefresh(){
+  holdActive=true;clearInterval(holdTimer);
+  holdTimer=setInterval(()=>{if(holdActive&&pendingSeats.length)db.doc('holds/'+myHoldId).set(holdData()).catch(e=>console.error(e))},HOLD_REFRESH_MS);
+}
+function releaseHold(){
+  clearInterval(holdTimer);holdTimer=null;
+  if(!holdActive)return;
+  holdActive=false;
+  delete holds[myHoldId];
+  if(db)db.doc('holds/'+myHoldId).delete().catch(e=>console.error(e));
+}
+window.addEventListener('pagehide',()=>{
+  if(!holdActive)return;
+  const body=JSON.stringify({op:'delete',collection:'holds',id:myHoldId});
+  try{navigator.sendBeacon('/api/db',new Blob([body],{type:'application/json'}))}catch(e){}
+});
 
 function toggleSeat(id){
   const tk=takenMap(currentShow);
   if(tk[id])return;
+  if(pendingMap(currentShow)[id])return;
   sel.has(id)?sel.delete(id):sel.add(id);
   renderUser();
 }
@@ -1269,13 +1323,13 @@ function renderUser(){
   }else{
     bp.style.background='';bp.innerHTML='';
   }
-  const tk=takenMap(currentShow);
-  sel.forEach(id=>{if(tk[id])sel.delete(id)});
+  const tk=takenMap(currentShow),pd=pendingMap(currentShow);
+  sel.forEach(id=>{if(tk[id]||pd[id])sel.delete(id)});
   document.querySelectorAll('#grid .seat').forEach(b=>{
-    const id=b.dataset.id,t=!!tk[id],s=sel.has(id);
-    b.classList.toggle('taken',t);b.classList.toggle('sel',s);
-    b.setAttribute('tabindex',t?'-1':'0');
-    b.setAttribute('aria-label',T('aria_seat',{id,status:t?T('aria_taken'):s?T('aria_selected'):T('aria_available')}));
+    const id=b.dataset.id,t=!!tk[id],p=!t&&!!pd[id],s=sel.has(id);
+    b.classList.toggle('taken',t);b.classList.toggle('pending',p);b.classList.toggle('sel',s);
+    b.setAttribute('tabindex',t||p?'-1':'0');
+    b.setAttribute('aria-label',T('aria_seat',{id,status:t?T('aria_taken'):p?T('aria_pending'):s?T('aria_selected'):T('aria_available')}));
     b.setAttribute('aria-pressed',s);
   });
   const n=sel.size;
@@ -1283,7 +1337,7 @@ function renderUser(){
   $('count').textContent=T('panel_count_value',{n});
   $('total').textContent=T('baht_value',{n:num(n*PRICE)});
   $('book').disabled=!n;
-  $('seatsSummary').textContent=T('seats_summary',{free:num(TOTAL_SEATS-Object.keys(tk).length),total:num(TOTAL_SEATS),price:num(PRICE)});
+  $('seatsSummary').textContent=T('seats_summary',{free:num(TOTAL_SEATS-new Set([...Object.keys(tk),...Object.keys(pd)]).size),total:num(TOTAL_SEATS),price:num(PRICE)});
 
   const mineEl=$('mine');mineEl.innerHTML='';
   if(!auth){mineEl.innerHTML=`<p class="empty">${T('guest_mybookings_prompt')}</p>`;return}
@@ -1318,22 +1372,40 @@ async function createBooking(show,seats,meta){
     const used=new Set(Object.entries(cur).filter(([,b])=>sameShow(b.show,show)).flatMap(([,b])=>b.seats||[]));
     const clash=seats.filter(s=>used.has(s));
     if(clash.length){bookings=cur;return {clash}}
+    const hSnap=await db.collection('holds').get();
+    const hs={};hSnap.docs.forEach(d=>hs[d.id]=d.data());holds=hs;
+    const held=pendingMap(show);
+    const pending=seats.filter(s=>held[s]);
+    if(pending.length)return {pending};
     let n=0;Object.keys(cur).forEach(k=>{n=Math.max(n,parseInt(k.slice(3),10)||0)});
     n++;if(n>999)return {full:true};
     const code='PD-'+pad(n);
     const data={seats,total:seats.length*PRICE,show,at:Date.now(),...meta};
     await db.doc('bookings/'+code).set(data);
     bookings={...cur,[code]:data};
+    if(holdActive){holdActive=false;clearInterval(holdTimer);delete holds[myHoldId];await db.doc('holds/'+myHoldId).delete().catch(e=>console.error(e))}
     return {code,data};
   });
 }
 
 let pendingShow=null,pendingSeats=[];
-$('book').addEventListener('click',()=>{
+$('book').addEventListener('click',async()=>{
   if(!sel.size)return;
   if(!auth){showToast(T('guest_book_toast'));goToLogin();return}
-  pendingShow=currentShow;pendingSeats=sortSeats(sel);
-  openPendingPopup(pendingShow,pendingSeats);
+  if(!db){showToast(T('err_db_not_ready'));return}
+  const show=currentShow,seats=sortSeats(sel);
+  $('book').disabled=true;
+  let res;
+  try{res=await placeHold(show,seats)}catch(e){console.error(e);res={err:true}}
+  if(res.ok){
+    pendingShow=show;pendingSeats=seats;
+    startHoldRefresh();
+    openPendingPopup(pendingShow,pendingSeats);
+  }else if(res.clash){res.clash.forEach(s=>sel.delete(s));showToast(T('err_seat_taken_msg',{seats:res.clash.join(', ')}))}
+  else if(res.pending){res.pending.forEach(s=>sel.delete(s));showToast(T('err_seat_pending_msg',{seats:res.pending.join(', ')}))}
+  else if(res.busy){showToast(T('err_booking_busy'))}
+  else{showToast(T('err_booking_failed'))}
+  renderUser();
 });
 
 async function cancelBooking(code){
@@ -1432,12 +1504,12 @@ function renderAdminSeats(){
   if(!adminSeatShow||!findShow(adminSeatShow))adminSeatShow=SHOWS.length?SHOWS[0].id:null;
   const sw=$('adminShowSwitch');
   sw.innerHTML=SHOWS.map(s=>`<option value="${esc(s.id)}" ${sameShow(s.id,adminSeatShow)?'selected':''}>${esc(showLabel(s))}</option>`).join('');
-  const tk=takenMap(adminSeatShow);
-  adminSel.forEach(id=>{if(tk[id])adminSel.delete(id)});
+  const tk=takenMap(adminSeatShow),pd=pendingMap(adminSeatShow);
+  adminSel.forEach(id=>{if(tk[id]||pd[id])adminSel.delete(id)});
   document.querySelectorAll('#adminGrid .seat').forEach(b=>{
-    const id=b.dataset.id,t=!!tk[id],s=adminSel.has(id);
-    b.classList.toggle('taken',t);b.classList.toggle('sel',s);
-    b.setAttribute('aria-label',T('aria_seat',{id,status:t?T('aria_taken'):s?T('aria_selected'):T('aria_available')}));
+    const id=b.dataset.id,t=!!tk[id],p=!t&&!!pd[id],s=adminSel.has(id);
+    b.classList.toggle('taken',t);b.classList.toggle('pending',p);b.classList.toggle('sel',s);
+    b.setAttribute('aria-label',T('aria_seat',{id,status:t?T('aria_taken'):p?T('aria_pending'):s?T('aria_selected'):T('aria_available')}));
   });
   $('adminSeatSummary').textContent=T('seats_booked_of',{booked:num(Object.keys(tk).length),total:num(TOTAL_SEATS)});
   const n=adminSel.size;
@@ -1458,6 +1530,7 @@ $('adminBookSeats').addEventListener('click',async()=>{
     adminSel.clear();
     showToast(T('msg_admin_booking_created',{code:res.code}));
   }else if(res.clash){res.clash.forEach(s=>adminSel.delete(s));showToast(T('err_seat_taken_msg',{seats:res.clash.join(', ')}))}
+  else if(res.pending){res.pending.forEach(s=>adminSel.delete(s));showToast(T('err_seat_pending_msg',{seats:res.pending.join(', ')}))}
   else if(res.full){showToast(T('err_booking_full'))}
   else if(res.busy){showToast(T('err_booking_busy'))}
   else{showToast(T('err_booking_failed'))}
@@ -1654,7 +1727,7 @@ function playSuccessChime(){
 
 document.addEventListener('click',e=>{
   const seat=e.target.closest('.seat');
-  if(seat){if(!seat.classList.contains('taken'))playPop(seat.classList.contains('sel'));return}
+  if(seat){if(!seat.classList.contains('taken')&&!seat.classList.contains('pending'))playPop(seat.classList.contains('sel'));return}
   const poster=e.target.closest('.poster');
   if(poster){playWhoosh();return}
   const danger=e.target.closest('.danger,.cancel,#logout,#splashSkip');
@@ -1705,6 +1778,10 @@ document.addEventListener('change',e=>{
   db.collection('bookings').onSnapshot(s=>{
     const b={};s.docs.forEach(d=>b[d.id]=d.data());bookings=b;
     if(!$('app').hidden){if(auth&&auth.role==='admin'){renderAdmin();renderUsers()}else renderUser()}
+  },e=>console.error(e));
+  db.collection('holds').onSnapshot(s=>{
+    const h={};s.docs.forEach(d=>h[d.id]=d.data());holds=h;
+    if(!$('app').hidden){if(auth&&auth.role==='admin')renderAdminSeats();else renderUser()}
   },e=>console.error(e));
   db.collection('users').onSnapshot(s=>{
     const u={};s.docs.forEach(d=>{u[d.id]=d.data()});users=u;

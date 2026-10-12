@@ -2,7 +2,11 @@ import { and, eq, lt, sql } from 'drizzle-orm'
 import { db } from '../../db/index.js'
 import { documents, locks } from '../../db/schema.js'
 
-const COLLECTIONS = new Set(['movies', 'bookings', 'users', 'meta'])
+const COLLECTIONS = new Set(['movies', 'bookings', 'users', 'meta', 'holds'])
+
+// Seat holds ("in progress" during payment) expire on the server clock so client clock skew can't keep seats locked.
+const HOLD_MIN_MS = 30_000
+const HOLD_MAX_MS = 15 * 60_000
 
 const json = (body: unknown, status = 200) => Response.json(body, { status })
 
@@ -29,6 +33,16 @@ export default async (req: Request) => {
   try {
     switch (op) {
       case 'list': {
+        if (collection === 'holds') {
+          await db
+            .delete(documents)
+            .where(
+              and(
+                eq(documents.collection, 'holds'),
+                sql`(${documents.data}->>'expiresAt')::bigint < ${Date.now()}`,
+              ),
+            )
+        }
         const rows = await db
           .select({ id: documents.id, data: documents.data })
           .from(documents)
@@ -46,6 +60,11 @@ export default async (req: Request) => {
 
       case 'set': {
         if (!isObject(data)) return json({ error: 'Invalid data' }, 400)
+        if (collection === 'holds') {
+          const ttlMs = Math.min(Math.max(Number(data.ttlMs) || HOLD_MAX_MS, HOLD_MIN_MS), HOLD_MAX_MS)
+          data.expiresAt = Date.now() + ttlMs
+          delete data.ttlMs
+        }
         await db
           .insert(documents)
           .values({ collection, id, data })

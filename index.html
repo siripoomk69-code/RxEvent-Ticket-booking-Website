@@ -164,6 +164,22 @@ tr:last-child td{border-bottom:0}
 .pickupNote{font-size:13px;background:color-mix(in srgb,var(--sel) 16%,transparent);border:1px solid var(--sel);border-radius:10px;padding:10px 12px;margin:10px 0 0;text-align:left;line-height:1.6}
 .paySection{border-top:1px dashed var(--line);margin-top:14px;padding-top:14px}
 .qrImg{display:block;width:100%;max-width:220px;margin:10px auto 0;border-radius:10px;border:1px solid var(--line)}
+.holdTimer{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;font-size:13px;background:color-mix(in srgb,var(--sel) 16%,transparent);border:1px solid var(--sel);border-radius:999px;padding:6px 14px;margin:0 auto;width:fit-content;max-width:100%}
+.holdTimer strong{font-size:18px;font-variant-numeric:tabular-nums;letter-spacing:1px;color:var(--ink)}
+.holdTimer.urgent{background:rgba(220,60,60,.14);border-color:#d94545}
+.holdTimer.urgent strong{color:#d94545}
+.holdCard{border-color:var(--sel);background:color-mix(in srgb,var(--sel) 10%,var(--panel))}
+.holdCard .holdLeft{font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
+.holdCard.urgent{border-color:#d94545}
+.holdCard.urgent .holdLeft{color:#d94545}
+.holdHint{font-size:12px;color:var(--mute);margin:8px 0 0}
+.tellMsg{font:500 15px/1.6 'Prompt',sans-serif;width:100%;min-height:110px;resize:vertical;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.tellBtns{display:grid;gap:8px}
+.tellBtns a,.tellBtns button{display:flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;padding:11px 16px;font:600 15px 'Prompt',sans-serif;cursor:pointer;text-decoration:none;border:0}
+.tellCopy{background:none!important;border:1px solid var(--line)!important;color:var(--ink)}
+.tellIg{background:linear-gradient(45deg,#f09433,#dc2743 50%,#bc1888);color:#fff}
+.tellLine{background:#06c755;color:#fff}
+.tellBtns [aria-disabled="true"]{opacity:.45;pointer-events:none}
 .slipThumb{display:block;width:100%;max-width:160px;margin:8px auto 0;border-radius:10px;border:1px solid var(--line)}
 .waitNote{font-size:13px;background:color-mix(in srgb,var(--free) 16%,transparent);border:1px solid var(--free);border-radius:10px;padding:10px 12px;margin:10px 0 0;text-align:left;line-height:1.6}
 .statusVerified{font-size:13px;background:color-mix(in srgb,var(--sel) 16%,transparent);border:1px solid var(--sel);border-radius:10px;padding:10px 12px;margin:10px 0 0;text-align:left;line-height:1.6}
@@ -350,6 +366,7 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
             <li><a href="#sec-users" data-i18n="admin_users_title">บัญชีผู้ใช้ทั้งหมด</a></li>
             <li><a href="#sec-movies" data-i18n="admin_movies_title">จัดการรอบภาพยนตร์</a></li>
             <li><a href="#sec-payment" data-i18n="admin_payment_title">ช่องทางการชำระเงิน</a></li>
+            <li><a href="#sec-contact" data-i18n="admin_contact_title">ช่องทางติดต่อแอดมิน</a></li>
             <li><a href="#sec-seatedit" data-i18n="admin_seatedit_title">จัดการที่นั่งรายรอบ</a></li>
             <li><a href="#sec-byshow" data-i18n="admin_byshow_title">สรุปการจองแยกตามรอบฉาย</a></li>
             <li><a href="#sec-bookings" data-i18n="admin_bookings_title">รายการจองทั้งหมด</a></li>
@@ -377,6 +394,19 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
             <input type="file" accept="image/*" id="paymentQrInput">
           </div>
           <div class="err" id="paymentQrErr"></div>
+
+          <div class="section-title" id="sec-contact" data-i18n="admin_contact_title">ช่องทางติดต่อแอดมิน</div>
+          <p class="sub" style="margin-top:-4px" data-i18n="admin_contact_sub">ลิงก์ของปุ่ม "เปิดแชท IG" และ "ส่งผ่าน Line" ในป๊อปอัพ "ฝากบอกแอดมินหน่อยนะ" หลังผู้จองอัปโหลดสลิป</p>
+          <div class="field" style="max-width:420px">
+            <label for="contactIgInput" data-i18n="admin_contact_ig_label">ลิงก์แชท Instagram</label>
+            <input id="contactIgInput" type="url" inputmode="url" placeholder="https://ig.me/m/your.account">
+          </div>
+          <div class="field" style="max-width:420px">
+            <label for="contactLineInput" data-i18n="admin_contact_line_label">ลิงก์ Line</label>
+            <input id="contactLineInput" type="url" inputmode="url" placeholder="https://line.me/R/ti/p/@your-id">
+          </div>
+          <div class="err" id="contactErr"></div>
+          <div><button class="mini" id="contactSave" type="button" data-i18n="admin_contact_save_btn">บันทึกลิงก์</button></div>
 
           <div class="section-title" id="sec-seatedit" data-i18n="admin_seatedit_title">จัดการที่นั่งรายรอบ</div>
           <p class="sub" style="margin-top:-4px" data-i18n="admin_seatedit_sub">คลิกที่นั่งว่างเพื่อเพิ่มการจองโดยเจ้าหน้าที่ หรือคลิกที่นั่งที่จองแล้วเพื่อยกเลิก</p>
@@ -423,6 +453,7 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
 <div class="overlay" id="ticketPopup" hidden aria-live="polite">
   <div class="modal ticketCard">
     <div class="confettiHost" id="confettiHost"></div>
+    <div class="holdTimer" id="holdTimer" hidden role="timer"><span data-i18n="hold_timer_label">⏳ กันที่นั่งไว้ให้ เหลือเวลา</span><strong id="holdTimerText">10:00</strong></div>
 
     <div id="ticketView1">
       <div class="icon">🎟️</div>
@@ -435,6 +466,8 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
         <button type="button" class="save" id="goPay" data-i18n="pay_go_btn">ชำระเงิน</button>
         <button class="linkbtn" id="ticketClose" data-i18n="close_btn">ปิด</button>
       </div>
+      <p class="holdHint" data-i18n="hold_resume_hint">ปิดหน้านี้ได้ ที่นั่งยังถูกกันไว้ และกลับมาชำระต่อได้ที่ "การจองของฉัน" จนกว่าจะหมดเวลา</p>
+      <button type="button" class="linkbtn" id="holdCancel" style="margin-top:4px" data-i18n="hold_cancel_btn">ยกเลิกรายการนี้</button>
     </div>
 
     <div id="ticketViewPay" hidden>
@@ -456,6 +489,7 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
         <label for="slipInput" data-i18n="pay_slip_label">อัปโหลดสลิปการโอนเงิน</label>
         <input type="file" accept="image/*" id="slipInput">
       </div>
+      <p class="holdHint" data-i18n="hold_extend_hint">เมื่อแนบสลิป ระบบจะเพิ่มเวลาทำรายการให้อีก 5 นาที</p>
       <div class="err" id="slipErr"></div>
       <div class="modalbtns" style="justify-content:center"><button type="button" class="linkbtn backbtn" id="slipCancel" data-i18n="cancel_upload_btn">← ยกเลิกการอัปโหลด</button></div>
     </div>
@@ -468,8 +502,23 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
       <div id="payStatusText3"></div>
       <p class="pickupNote" id="pPickup3"></p>
       <p class="thanks" data-i18n="ticket_thanks">ขอขอบคุณสำหรับการสนับสนุน รายได้ที่ได้จากกิจกรรมในครั้งนี้จะนำไปช่วยเหลือเด็กพิการซ้ำซ้อน ในโครงการเรียนรู้ชีวิตสู่จิตสำนึกเภสัชกรที่ดี</p>
-      <div class="modalbtns" style="justify-content:center"><button class="save" id="ticketClose2" data-i18n="close_btn">ปิด</button></div>
+      <div class="modalbtns" style="justify-content:center"><button type="button" class="cancel" id="tellAdminOpen" data-i18n="tell_open_btn">💌 ฝากบอกแอดมิน</button><button class="save" id="ticketClose2" data-i18n="close_btn">ปิด</button></div>
     </div>
+  </div>
+</div>
+
+<div class="overlay" id="tellAdminPopup" hidden role="dialog" aria-modal="true" aria-labelledby="tellAdminTitle">
+  <div class="modal" style="text-align:center">
+    <div style="font-size:36px;line-height:1">💌</div>
+    <h3 id="tellAdminTitle" data-i18n="tell_title">ฝากบอกแอดมินหน่อยนะ</h3>
+    <p class="sub" style="margin:-4px 0 0" data-i18n="tell_sub">คัดลอกข้อความด้านล่างแล้วส่งให้แอดมิน เพื่อให้ตรวจรายการได้เร็วขึ้น</p>
+    <textarea class="tellMsg" id="tellMsg" aria-label="ข้อความถึงแอดมิน"></textarea>
+    <div class="tellBtns">
+      <button type="button" class="tellCopy" id="tellCopy" data-i18n="tell_copy_btn">📋 คัดลอกข้อความ</button>
+      <a class="tellIg" id="tellIg" target="_blank" rel="noopener" data-i18n="tell_ig_btn">เปิดแชท IG</a>
+      <a class="tellLine" id="tellLine" target="_blank" rel="noopener" data-i18n="tell_line_btn">ส่งผ่าน Line</a>
+    </div>
+    <div class="modalbtns" style="justify-content:center"><button type="button" class="linkbtn" id="tellClose" data-i18n="close_btn">ปิด</button></div>
   </div>
 </div>
 
@@ -645,6 +694,37 @@ const STR={
   back_btn:['← ย้อนกลับ','← Back'],
   pay_upload_title:['อัปโหลดสลิปการโอนเงิน','Upload transfer slip'],
   cancel_upload_btn:['← ยกเลิกการอัปโหลด','← Cancel upload'],
+  hold_timer_label:['⏳ กันที่นั่งไว้ให้ เหลือเวลา','⏳ Seats held for you, time left'],
+  hold_extend_hint:['เมื่อแนบสลิป ระบบจะเพิ่มเวลาทำรายการให้อีก 5 นาที','Attaching a slip adds 5 more minutes to finish'],
+  msg_hold_extended:['แนบสลิปแล้ว เพิ่มเวลาทำรายการอีก 5 นาที','Slip attached, 5 more minutes added'],
+  msg_hold_expired:['หมดเวลาชำระเงิน ที่นั่งถูกปล่อยกลับเป็นว่างแล้ว กรุณาจองใหม่อีกครั้ง','Payment time ran out. Your seats were released, please book again'],
+  err_hold_expired:['หมดเวลาทำรายการแล้ว กรุณาจองใหม่อีกครั้ง','Time ran out, please book again'],
+  tell_title:['ฝากบอกแอดมินหน่อยนะ','Let the admin know'],
+  tell_sub:['คัดลอกข้อความด้านล่างแล้วส่งให้แอดมิน เพื่อให้ตรวจรายการได้เร็วขึ้น','Copy the message below and send it to the admin so they can check your booking faster'],
+  tell_msg:['สวัสดีค่ะ/ครับ 💌 ส่งสลิปในเว็บ RxEvent แล้ว รบกวนช่วยตรวจรายการ {code} ยอด {total} บาทให้หน่อยนะคะ/ครับ ขอบคุณค่ะ/ครับ','Hello 💌 I\u2019ve sent my slip on the RxEvent website. Could you please check booking {code}, amount {total} baht? Thank you!'],
+  tell_copy_btn:['📋 คัดลอกข้อความ','📋 Copy message'],
+  tell_ig_btn:['เปิดแชท IG','Open IG chat'],
+  tell_line_btn:['ส่งผ่าน Line','Send via Line'],
+  tell_open_btn:['💌 ฝากบอกแอดมิน','💌 Tell the admin'],
+  msg_copied:['คัดลอกข้อความแล้ว','Message copied'],
+  err_copy_failed:['คัดลอกไม่สำเร็จ กรุณากดค้างที่ข้อความเพื่อคัดลอก','Copy failed, please select the text and copy it manually'],
+  admin_contact_title:['ช่องทางติดต่อแอดมิน','Admin contact links'],
+  admin_contact_sub:['ลิงก์ของปุ่ม "เปิดแชท IG" และ "ส่งผ่าน Line" ในป๊อปอัพ "ฝากบอกแอดมินหน่อยนะ" หลังผู้จองอัปโหลดสลิป','Links for the "Open IG chat" and "Send via Line" buttons in the "Let the admin know" popup shown after a slip is uploaded'],
+  admin_contact_ig_label:['ลิงก์แชท Instagram','Instagram chat link'],
+  admin_contact_line_label:['ลิงก์ Line','Line link'],
+  admin_contact_save_btn:['บันทึกลิงก์','Save links'],
+  msg_contact_saved:['บันทึกลิงก์ติดต่อแอดมินแล้ว','Contact links saved'],
+  err_contact_url:['ลิงก์ต้องขึ้นต้นด้วย https://','Links must start with https://'],
+  err_contact_save:['บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง','Could not save, please try again'],
+  hold_resume_hint:['ปิดหน้านี้ได้ ที่นั่งยังถูกกันไว้ และกลับมาชำระต่อได้ที่ "การจองของฉัน" จนกว่าจะหมดเวลา','You can close this, your seats stay held and you can continue from "My bookings" until time runs out'],
+  hold_cancel_btn:['ยกเลิกรายการนี้','Cancel this booking'],
+  confirm_hold_cancel:['ยกเลิกรายการที่รอชำระเงิน และปล่อยที่นั่ง {seats} ใช่ไหม?','Cancel this pending booking and release seats {seats}?'],
+  msg_hold_cancelled:['ยกเลิกรายการแล้ว ที่นั่งถูกปล่อยกลับเป็นว่าง','Booking cancelled, seats released'],
+  msg_hold_kept:['ที่นั่งยังถูกกันไว้ กลับมาชำระต่อได้ที่ "การจองของฉัน"','Seats are still held, continue from "My bookings"'],
+  msg_hold_exists:['คุณมีรายการที่รอชำระเงินอยู่ กรุณาทำรายการนั้นให้เสร็จหรือยกเลิกก่อน','You already have a pending booking, finish or cancel it first'],
+  hold_card_title:['รอชำระเงิน','Awaiting payment'],
+  hold_card_left:['เหลือเวลา ','Time left '],
+  hold_continue_btn:['ทำรายการต่อ','Continue'],
   pay_status_title:['สถานะการชำระเงิน','Payment status'],
   status_awaiting_full:['รอตรวจสอบการชำระเงิน','Awaiting payment verification'],
   status_verified:['ตรวจสอบการชำระเงินแล้ว','Payment verified'],
@@ -779,9 +859,11 @@ function applyStaticI18n(){
 }
 
 let db=null,auth=null,assetsCap=null,bookings={},users={},holds={},sel=new Set(),currentShow=null;
-const HOLD_TTL_MS=10*60_000,HOLD_REFRESH_MS=2*60_000;
-const myHoldId='h-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);
-let holdActive=false,holdTimer=null;
+// Seats are held for a fixed 10 minutes once booking starts; attaching a slip adds 5 more minutes (once).
+const HOLD_TTL_MS=10*60_000,HOLD_EXTEND_MS=5*60_000;
+const newHoldId=()=>'h-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);
+let myHoldId=newHoldId();
+let holdActive=false,holdTimer=null,holdDeadline=0,holdExtended=false,slipBusy=false;
 let adminSeatShow=null,adminSel=new Set();
 let paymentQrId='9460d08263e9ca75723896305ecce297';
 function applyQrImages(){
@@ -1123,12 +1205,82 @@ function openPendingPopup(show,seats){
   $('ticketSlipStatus1').innerHTML='';
   $('ticketView1').hidden=false;$('ticketViewPay').hidden=true;$('ticketView2').hidden=true;$('ticketView3').hidden=true;
   $('ticketPopup').hidden=false;
+  if(holdActive)tickHold();
 }
-function closeTicketPopup(){$('ticketPopup').hidden=true;releaseHold()}
-$('ticketClose').addEventListener('click',closeTicketPopup);
-$('ticketClose2').addEventListener('click',closeTicketPopup);
+// Closing keeps the seat hold so the booker can resume from "My bookings" until it expires.
+function closeTicketPopup(release){
+  $('ticketPopup').hidden=true;
+  if(release===true)releaseHold();
+  else if(holdActive)showToast(T('msg_hold_kept'));
+  renderUser();
+}
+$('ticketClose').addEventListener('click',()=>closeTicketPopup());
+$('ticketClose2').addEventListener('click',()=>closeTicketPopup());
+async function cancelHold(){
+  if(!holdActive)return;
+  if(!await showConfirm(T('confirm_hold_cancel',{seats:pendingSeats.join(', ')})))return;
+  if(!holdActive)return;
+  $('ticketPopup').hidden=true;
+  releaseHold();pendingSeats=[];
+  showToast(T('msg_hold_cancelled'));
+  renderUser();
+}
+$('holdCancel').addEventListener('click',cancelHold);
+function resumeHold(){if(holdActive&&pendingSeats.length)openPendingPopup(pendingShow,pendingSeats)}
 
 const IG_URL='https://www.instagram.com/rxrsu40.official/?utm_source=ig_web_button_share_sheet';
+
+/* "Let the admin know" popup after a slip upload; IG/Line links are editable by admin (meta/contact). */
+let contactLinks={igUrl:'https://ig.me/m/rxrsu40.official',lineUrl:''};
+const safeUrl=u=>/^https:\/\/[^\s]+$/i.test(String(u||'').trim())?String(u).trim():'';
+let tellInfo=null;
+function setTellLink(el,url){
+  if(url){el.href=url;el.removeAttribute('aria-disabled');el.removeAttribute('tabindex')}
+  else{el.removeAttribute('href');el.setAttribute('aria-disabled','true');el.setAttribute('tabindex','-1')}
+}
+function applyContactLinks(){
+  setTellLink($('tellIg'),safeUrl(contactLinks.igUrl));
+  setTellLink($('tellLine'),safeUrl(contactLinks.lineUrl));
+  const ig=$('contactIgInput'),ln=$('contactLineInput');
+  if(ig&&document.activeElement!==ig)ig.value=contactLinks.igUrl||'';
+  if(ln&&document.activeElement!==ln)ln.value=contactLinks.lineUrl||'';
+}
+function openTellAdmin(code,total){
+  if(code)tellInfo={code,total};
+  if(!tellInfo)return;
+  $('tellMsg').value=T('tell_msg',{code:tellInfo.code,total:num(tellInfo.total)});
+  applyContactLinks();
+  $('tellAdminPopup').hidden=false;
+}
+async function copyTellMsg(silent){
+  const text=$('tellMsg').value;
+  let ok=false;
+  try{await navigator.clipboard.writeText(text);ok=true}catch(e){
+    const ta=$('tellMsg');ta.focus();ta.select();
+    try{ok=document.execCommand('copy')}catch(e2){}
+  }
+  if(!silent||!ok)showToast(ok?T('msg_copied'):T('err_copy_failed'));
+  return ok;
+}
+$('tellCopy').addEventListener('click',()=>copyTellMsg(false));
+// IG and Line can't be pre-filled reliably, so copy the message before opening the chat.
+[$('tellIg'),$('tellLine')].forEach(a=>a.addEventListener('click',()=>{if(a.href)copyTellMsg(false)}));
+$('tellClose').addEventListener('click',()=>{$('tellAdminPopup').hidden=true});
+$('tellAdminOpen').addEventListener('click',()=>openTellAdmin());
+$('contactSave').addEventListener('click',async()=>{
+  const igUrl=$('contactIgInput').value.trim(),lineUrl=$('contactLineInput').value.trim();
+  const err=$('contactErr');err.textContent='';
+  if((igUrl&&!safeUrl(igUrl))||(lineUrl&&!safeUrl(lineUrl))){err.textContent=T('err_contact_url');return}
+  if(!db){err.textContent=T('err_db_not_ready');return}
+  $('contactSave').disabled=true;
+  try{
+    await db.doc('meta/contact').set({igUrl,lineUrl});
+    contactLinks={igUrl,lineUrl};applyContactLinks();
+    showToast(T('msg_contact_saved'));
+  }catch(e){console.error(e);err.textContent=T('err_contact_save')}
+  finally{$('contactSave').disabled=false}
+});
+applyContactLinks();
 function paymentStatusHTML(b){
   if(!b||!b.slipId)return '';
   const status=b.paymentStatus||'awaiting';
@@ -1178,7 +1330,10 @@ $('slipInput').addEventListener('change',async()=>{
   if(!file.type.startsWith('image/')){showToast(T('err_choose_image'));$('slipInput').value='';return}
   if(!assetsCap){$('slipErr').textContent=T('err_upload_unavailable');$('slipInput').value='';return}
   if(!pendingSeats.length){$('slipErr').textContent=T('err_booking_failed');return}
+  if(!holdActive){$('slipErr').textContent=T('err_hold_expired');$('slipInput').value='';return}
+  slipBusy=true;
   $('slipInput').disabled=true;
+  await extendHold();
   let uploadedId=null;
   try{
     const blob=await resizeImageIfLarge(file,1600);
@@ -1194,19 +1349,18 @@ $('slipInput').addEventListener('change',async()=>{
       $('pPickup3').innerHTML=T('ticket_pickup',{date:esc(fmtShowDate(s&&s.date)),time:esc(pickupTime(s))});
       fireConfetti();
       $('ticketView2').hidden=true;$('ticketView3').hidden=false;
+      openTellAdmin(res.code,res.data.total);
       renderUser();
     }else{
       if(uploadedId){try{await assetsCap.delete(uploadedId)}catch(e){}}
       if(res.clash){
         res.clash.forEach(sId=>sel.delete(sId));
         showToast(T('err_seat_taken_msg',{seats:res.clash.join(', ')}));
-        closeTicketPopup();
-        renderUser();
+        closeTicketPopup(true);
       }else if(res.pending){
         res.pending.forEach(sId=>sel.delete(sId));
         showToast(T('err_seat_pending_msg',{seats:res.pending.join(', ')}));
-        closeTicketPopup();
-        renderUser();
+        closeTicketPopup(true);
       }else if(res.full){$('slipErr').textContent=T('err_booking_full')}
       else if(res.busy){$('slipErr').textContent=T('err_booking_busy')}
       else{$('slipErr').textContent=T('err_booking_failed')}
@@ -1216,7 +1370,11 @@ $('slipInput').addEventListener('change',async()=>{
     if(uploadedId){try{await assetsCap.delete(uploadedId)}catch(e2){}}
     $('slipErr').textContent=T('err_upload_failed');
   }
-  finally{$('slipInput').disabled=false;$('slipInput').value=''}
+  finally{
+    slipBusy=false;
+    $('slipInput').disabled=false;$('slipInput').value='';
+    if(holdActive)tickHold();
+  }
 });
 
 $('loginBtn').addEventListener('click',doAuth);
@@ -1257,7 +1415,8 @@ async function doAuth(){
 }
 
 $('logout').addEventListener('click',()=>{
-  releaseHold();
+  holdActive=false;stopHoldCountdown();pendingSeats=[];myHoldId=newHoldId();
+  $('ticketPopup').hidden=true;$('tellAdminPopup').hidden=true;
   auth=null;try{localStorage.removeItem(LKEY)}catch(e){}
   $('app').hidden=true;$('login').hidden=true;$('movieSelect').hidden=false;$('guestLogin').hidden=false;
   [...movieGrid.children].forEach(t=>t.classList.remove('active'));
@@ -1271,7 +1430,18 @@ function pendingMap(show){const m={};for(const h in holds){if(h===myHoldId)conti
 
 /* Seat holds: chosen seats are marked "in progress" while the booker is in the payment flow,
    and released (back to available) when they close it, leave the page, or the hold expires. */
-function holdData(){return {show:pendingShow,seats:pendingSeats,userKey:auth&&auth.key,ttlMs:HOLD_TTL_MS}}
+function holdData(){return {show:pendingShow,seats:pendingSeats,userKey:auth&&auth.key,extended:holdExtended,ttlMs:Math.max(holdDeadline-Date.now(),0)}}
+// Pick up this user's unexpired hold (e.g. after a reload or re-login) so the payment can be resumed.
+function adoptOwnHold(){
+  if(holdActive||!auth||auth.role==='admin')return;
+  const now=Date.now();
+  const own=Object.entries(holds).find(([,h])=>h.userKey===auth.key&&Number(h.expiresAt)>now&&(h.seats||[]).length);
+  if(!own)return;
+  const [id,h]=own;
+  myHoldId=id;pendingShow=h.show;pendingSeats=h.seats.slice();
+  holdActive=true;holdExtended=!!h.extended;holdDeadline=Number(h.expiresAt);
+  clearInterval(holdTimer);holdTimer=setInterval(tickHold,1000);
+}
 async function placeHold(show,seats){
   return withLock(async()=>{
     const [bSnap,hSnap]=await Promise.all([db.collection('bookings').get(),db.collection('holds').get()]);
@@ -1283,26 +1453,59 @@ async function placeHold(show,seats){
     const held=pendingMap(show);
     const pending=seats.filter(s=>held[s]);
     if(pending.length)return {pending};
-    await db.doc('holds/'+myHoldId).set({show,seats,userKey:auth&&auth.key,ttlMs:HOLD_TTL_MS});
+    myHoldId=newHoldId();
+    await db.doc('holds/'+myHoldId).set({show,seats,userKey:auth&&auth.key,extended:false,ttlMs:HOLD_TTL_MS});
     return {ok:true};
   });
 }
-function startHoldRefresh(){
-  holdActive=true;clearInterval(holdTimer);
-  holdTimer=setInterval(()=>{if(holdActive&&pendingSeats.length)db.doc('holds/'+myHoldId).set(holdData()).catch(e=>console.error(e))},HOLD_REFRESH_MS);
+function startHoldCountdown(){
+  holdActive=true;holdExtended=false;holdDeadline=Date.now()+HOLD_TTL_MS;
+  clearInterval(holdTimer);
+  holdTimer=setInterval(tickHold,1000);
+  tickHold();
+}
+function stopHoldCountdown(){
+  clearInterval(holdTimer);holdTimer=null;
+  $('holdTimer').hidden=true;
+}
+function tickHold(){
+  if(!holdActive){stopHoldCountdown();return}
+  const left=Math.max(holdDeadline-Date.now(),0),sec=Math.ceil(left/1000);
+  const el=$('holdTimer');
+  el.hidden=!$('ticketView3').hidden;
+  el.classList.toggle('urgent',sec<=60);
+  const txt=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');
+  $('holdTimerText').textContent=txt;
+  const mc=$('mineHoldLeft');
+  if(mc){mc.textContent=txt;mc.closest('.holdCard').classList.toggle('urgent',sec<=60)}
+  // Don't pull seats out from under an upload that's already in flight.
+  if(left<=0&&!slipBusy)onHoldExpired();
+}
+function onHoldExpired(){
+  const wasOpen=!$('ticketPopup').hidden;
+  releaseHold();
+  pendingSeats=[];
+  $('ticketPopup').hidden=true;
+  showToast(T('msg_hold_expired'));
+  if(!wasOpen&&!$('userView').hidden)$('mine').scrollIntoView({behavior:'smooth',block:'nearest'});
+  renderUser();
+}
+async function extendHold(){
+  if(!holdActive||holdExtended)return;
+  holdExtended=true;
+  holdDeadline+=HOLD_EXTEND_MS;
+  tickHold();
+  showToast(T('msg_hold_extended'));
+  try{await db.doc('holds/'+myHoldId).set(holdData())}catch(e){console.error(e)}
 }
 function releaseHold(){
-  clearInterval(holdTimer);holdTimer=null;
+  stopHoldCountdown();
   if(!holdActive)return;
   holdActive=false;
   delete holds[myHoldId];
   if(db)db.doc('holds/'+myHoldId).delete().catch(e=>console.error(e));
 }
-window.addEventListener('pagehide',()=>{
-  if(!holdActive)return;
-  const body=JSON.stringify({op:'delete',collection:'holds',id:myHoldId});
-  try{navigator.sendBeacon('/api/db',new Blob([body],{type:'application/json'}))}catch(e){}
-});
+// Holds are intentionally kept on page close/reload; the server expires them on its own clock.
 
 function toggleSeat(id){
   const tk=takenMap(currentShow);
@@ -1314,6 +1517,7 @@ function toggleSeat(id){
 
 function renderUser(){
   if(auth&&auth.role==='admin')return;
+  adoptOwnHold();
   const sw=$('showSwitch');
   sw.innerHTML=SHOWS.map(s=>`<option value="${esc(s.id)}" ${sameShow(s.id,currentShow)?'selected':''}>${esc(showLabel(s))}</option>`).join('');
   const cur=findShow(currentShow),bp=$('bookingPoster');
@@ -1342,14 +1546,33 @@ function renderUser(){
   const mineEl=$('mine');mineEl.innerHTML='';
   if(!auth){mineEl.innerHTML=`<p class="empty">${T('guest_mybookings_prompt')}</p>`;return}
   const mine=Object.entries(bookings).filter(([,b])=>b.userKey===auth.key).sort((a,b)=>a[0]<b[0]?1:-1);
-  if(!mine.length){mineEl.innerHTML=`<p class="empty">${T('mybookings_empty')}</p>`}
+  if(holdActive&&pendingSeats.length){
+    const hc=document.createElement('div');hc.className='card holdCard';
+    hc.innerHTML=`<div><span class="code2">⏳ ${esc(T('hold_card_title'))}</span><div class="meta">${esc(showLabel(findShow(pendingShow)))} · ${esc(T('ticket_seats_prefix'))}${esc(pendingSeats.join(', '))} · ${T('baht_value',{n:num(pendingSeats.length*PRICE)})}<br>${esc(T('hold_card_left'))}<span class="holdLeft" id="mineHoldLeft"></span></div></div>`;
+    const tools=document.createElement('div');tools.className='tools';
+    const go=document.createElement('button');go.className='mini';go.textContent=T('hold_continue_btn');
+    go.addEventListener('click',resumeHold);
+    const cx=document.createElement('button');cx.className='mini danger';cx.textContent=T('cancel_btn');
+    cx.addEventListener('click',cancelHold);
+    tools.append(go,cx);hc.appendChild(tools);
+    mineEl.appendChild(hc);
+    tickHold();
+  }
+  if(!mine.length&&!(holdActive&&pendingSeats.length)){mineEl.innerHTML=`<p class="empty">${T('mybookings_empty')}</p>`}
   mine.forEach(([code,b])=>{
     const card=document.createElement('div');card.className='card';
     const slip=b.slipId?`<div style="margin-top:8px">${paymentStatusHTML(b)}<img class="slipThumb" src="/_blob/${esc(b.slipId)}" alt=""></div>`:'';
     card.innerHTML=`<div><span class="code2">${code}</span><div class="meta">${showLabel(findShow(b.show))} · ${T('ticket_seats_prefix')}${b.seats.join(', ')} · ${T('baht_value',{n:num(b.total)})}<br>${T('ticket_booked_at')}${fmtDate(b.at)}</div>${slip}</div>`;
     const cancel=document.createElement('button');cancel.className='mini danger';cancel.textContent=T('cancel_btn');
     cancel.addEventListener('click',()=>cancelBooking(code));
-    card.appendChild(cancel);
+    const tools=document.createElement('div');tools.className='tools';
+    if(b.slipId){
+      const tell=document.createElement('button');tell.className='mini';tell.textContent=T('tell_open_btn');
+      tell.addEventListener('click',()=>openTellAdmin(code,b.total));
+      tools.appendChild(tell);
+    }
+    tools.appendChild(cancel);
+    card.appendChild(tools);
     mineEl.appendChild(card);
   });
 }
@@ -1383,7 +1606,7 @@ async function createBooking(show,seats,meta){
     const data={seats,total:seats.length*PRICE,show,at:Date.now(),...meta};
     await db.doc('bookings/'+code).set(data);
     bookings={...cur,[code]:data};
-    if(holdActive){holdActive=false;clearInterval(holdTimer);delete holds[myHoldId];await db.doc('holds/'+myHoldId).delete().catch(e=>console.error(e))}
+    if(holdActive){holdActive=false;stopHoldCountdown();delete holds[myHoldId];await db.doc('holds/'+myHoldId).delete().catch(e=>console.error(e))}
     return {code,data};
   });
 }
@@ -1393,13 +1616,14 @@ $('book').addEventListener('click',async()=>{
   if(!sel.size)return;
   if(!auth){showToast(T('guest_book_toast'));goToLogin();return}
   if(!db){showToast(T('err_db_not_ready'));return}
+  if(holdActive){showToast(T('msg_hold_exists'));resumeHold();return}
   const show=currentShow,seats=sortSeats(sel);
   $('book').disabled=true;
   let res;
   try{res=await placeHold(show,seats)}catch(e){console.error(e);res={err:true}}
   if(res.ok){
     pendingShow=show;pendingSeats=seats;
-    startHoldRefresh();
+    startHoldCountdown();
     openPendingPopup(pendingShow,pendingSeats);
   }else if(res.clash){res.clash.forEach(s=>sel.delete(s));showToast(T('err_seat_taken_msg',{seats:res.clash.join(', ')}))}
   else if(res.pending){res.pending.forEach(s=>sel.delete(s));showToast(T('err_seat_pending_msg',{seats:res.pending.join(', ')}))}
@@ -1791,6 +2015,13 @@ document.addEventListener('change',e=>{
     if(doc&&doc.exists){
       const data=doc.data();
       if(data&&data.qrId){paymentQrId=data.qrId;applyQrImages()}
+    }
+  },e=>console.error(e));
+  db.doc('meta/contact').onSnapshot(doc=>{
+    if(doc&&doc.exists){
+      const data=doc.data()||{};
+      contactLinks={igUrl:data.igUrl||'',lineUrl:data.lineUrl||''};
+      applyContactLinks();
     }
   },e=>console.error(e));
   let moviesSeeded=false;

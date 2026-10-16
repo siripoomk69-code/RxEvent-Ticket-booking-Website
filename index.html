@@ -347,7 +347,7 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
       <section class="panel" aria-live="polite">
         <div class="line"><span data-i18n="panel_seats_label">ที่นั่งที่เลือก</span><span id="seats">ยังไม่ได้เลือก</span></div>
         <div class="line"><span data-i18n="panel_count_label">จำนวน</span><span id="count">0 ที่นั่ง</span></div>
-        <div class="line"><span data-i18n="panel_total_label">ราคารวม</span><span class="total" id="total">0 บาท</span></div>
+        <div class="line"><span data-i18n="panel_total_label">เงินร่วมช่วยเหลือทั้งหมด</span><span class="total" id="total">0 บาท</span></div>
         <button class="book" id="book" disabled data-i18n="book_btn">จองที่นั่ง</button>
       </section>
 
@@ -440,7 +440,7 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
             <button class="mini danger" id="clearAll" data-i18n="clearall_btn">ล้างข้อมูลการจองทั้งหมด</button>
           </div>
           <table>
-            <thead><tr><th data-i18n="th_code">รหัส</th><th data-i18n="th_show">รอบ</th><th data-i18n="th_booker">ผู้จอง</th><th data-i18n="th_seats">ที่นั่ง</th><th data-i18n="th_amount">ยอด</th><th data-i18n="th_bookedat">วันเวลาที่จอง</th><th data-i18n="th_slip">สลิป</th><th data-i18n="th_paystatus">สถานะการชำระเงิน</th><th></th></tr></thead>
+            <thead><tr><th data-i18n="th_code">รหัส</th><th data-i18n="th_show">รอบ</th><th data-i18n="th_booker">ผู้จอง</th><th data-i18n="th_seats">ที่นั่ง</th><th data-i18n="th_amount">ยอดบริจาค</th><th data-i18n="th_bookedat">วันเวลาที่จอง</th><th data-i18n="th_slip">สลิป</th><th data-i18n="th_paystatus">สถานะการชำระเงิน</th><th></th></tr></thead>
             <tbody id="adminRows"></tbody>
           </table>
           <p class="empty" id="adminEmpty" hidden data-i18n="adminempty">ยังไม่มีการจอง</p>
@@ -460,7 +460,7 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
       <p style="margin:2px 0 0;font-weight:700;color:var(--ink)" data-i18n="booking_pending_title">เกือบเสร็จแล้ว! กรุณาชำระเงินเพื่อยืนยันการจอง</p>
       <p id="pShow" class="sub" style="margin:8px 0 0"></p>
       <p class="sub" style="margin:0"><span data-i18n="ticket_seats_prefix">ที่นั่ง </span><strong id="pSeats" style="color:var(--ink)"></strong></p>
-      <p class="sub" style="margin:0"><span data-i18n="ticket_total_prefix">ยอดชำระ </span><strong id="pTotal" style="color:var(--ink)"></strong></p>
+      <p class="sub" style="margin:0"><span data-i18n="ticket_total_prefix">ยอดบริจาค </span><strong id="pTotal" style="color:var(--ink)"></strong></p>
       <p class="waitNote" data-i18n="booking_pending_note">ที่นั่งของท่านจะยังไม่ถูกบันทึกจนกว่าจะชำระเงินและอัปโหลดสลิปสำเร็จ หากยังไม่ชำระเงิน จะถือว่าการจองนี้ยังไม่สำเร็จ</p>
       <div class="modalbtns" style="justify-content:center">
         <button type="button" class="save" id="goPay" data-i18n="pay_go_btn">ชำระเงิน</button>
@@ -473,7 +473,7 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
     <div id="ticketViewPay" hidden>
       <div class="icon">💳</div>
       <p style="margin:2px 0 0;font-weight:700;color:var(--ink)" data-i18n="pay_title">ชำระเงินผ่าน PromptPay</p>
-      <p class="sub" style="margin:2px 0 0"><span data-i18n="pay_amount_prefix">ยอดที่ต้องชำระ </span><strong id="payAmount" style="color:var(--ink)"></strong></p>
+      <p class="sub" style="margin:2px 0 0"><span data-i18n="pay_amount_prefix">ยอดบริจาค </span><strong id="payAmount" style="color:var(--ink)"></strong></p>
       <img class="qrImg" id="qrImgPay" src="/_blob/9460d08263e9ca75723896305ecce297" alt="PromptPay QR">
       <div id="ticketSlipStatus1"></div>
       <button type="button" class="mini" id="goUploadSlip" style="margin-top:12px" data-i18n="pay_upload_btn">อัปโหลดสลิปการโอนเงิน</button>
@@ -484,7 +484,7 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
       <div class="icon">📎</div>
       <p style="margin:2px 0 0;font-weight:700;color:var(--ink)" data-i18n="pay_upload_title">อัปโหลดสลิปการโอนเงิน</p>
       <img class="qrImg" id="qrImgUpload" src="/_blob/9460d08263e9ca75723896305ecce297" alt="PromptPay QR">
-      <p class="sub" style="margin:8px 0 0"><span data-i18n="pay_amount_prefix">ยอดที่ต้องชำระ </span><strong id="payAmount2" style="color:var(--ink)"></strong></p>
+      <p class="sub" style="margin:8px 0 0"><span data-i18n="pay_amount_prefix">ยอดบริจาค </span><strong id="payAmount2" style="color:var(--ink)"></strong></p>
       <div class="field" style="max-width:280px;margin:10px auto 0;text-align:left">
         <label for="slipInput" data-i18n="pay_slip_label">อัปโหลดสลิปการโอนเงิน</label>
         <input type="file" accept="image/*" id="slipInput">
@@ -512,6 +512,7 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
     <div style="font-size:36px;line-height:1">💌</div>
     <h3 id="tellAdminTitle" data-i18n="tell_title">ฝากบอกแอดมินหน่อยนะ</h3>
     <p class="sub" style="margin:-4px 0 0" data-i18n="tell_sub">คัดลอกข้อความด้านล่างแล้วส่งให้แอดมิน เพื่อให้ตรวจรายการได้เร็วขึ้น</p>
+    <p class="sub" style="margin:4px 0 0;font-weight:600;color:var(--ink)" data-i18n="tell_hours">⏰ แอดมินจะดำเนินรายการในเวลาทำการ 08:00 - 20:00 ของทุกวัน</p>
     <textarea class="tellMsg" id="tellMsg" aria-label="ข้อความถึงแอดมิน"></textarea>
     <div class="tellBtns">
       <button type="button" class="tellCopy" id="tellCopy" data-i18n="tell_copy_btn">📋 คัดลอกข้อความ</button>
@@ -647,12 +648,12 @@ const STR={
   legend_sel:['ที่คุณเลือก','Your selection'],
   legend_taken:['ถูกจองแล้ว','Taken'],
   legend_pending:['กำลังดำเนินการ','In progress'],
-  seats_summary:['ว่าง {free} จาก {total} ที่นั่ง · ที่นั่งละ {price} บาท','{free} of {total} seats available · {price} THB per seat'],
+  seats_summary:['ว่าง {free} จาก {total} ที่นั่ง · ร่วมบริจาคที่นั่งละ {price} บาท','{free} of {total} seats available · {price} THB donation per seat'],
   panel_seats_label:['ที่นั่งที่เลือก','Selected seats'],
   panel_seats_empty:['ยังไม่ได้เลือก','None selected'],
   panel_count_label:['จำนวน','Quantity'],
   panel_count_value:['{n} ที่นั่ง','{n} seat(s)'],
-  panel_total_label:['ราคารวม','Total'],
+  panel_total_label:['เงินร่วมช่วยเหลือทั้งหมด','Total contribution'],
   baht_value:['{n} บาท','{n} THB'],
   book_btn:['จองที่นั่ง','Book seats'],
   book_btn_busy:['กำลังจอง…','Booking…'],
@@ -682,7 +683,7 @@ const STR={
   msg_admin_booking_created:['เพิ่มการจองโดยเจ้าหน้าที่แล้ว (รหัส {code})','Staff booking created ({code})'],
   staff_booking_label:['จองโดยเจ้าหน้าที่','Booked by staff'],
   pay_title:['ชำระเงินผ่าน PromptPay','Pay via PromptPay'],
-  pay_amount_prefix:['ยอดที่ต้องชำระ ','Amount due '],
+  pay_amount_prefix:['ยอดบริจาค ','Donation amount '],
   pay_slip_label:['อัปโหลดสลิปการโอนเงิน','Upload transfer slip'],
   msg_slip_uploaded:['อัปโหลดสลิปแล้ว','Slip uploaded'],
   th_slip:['สลิป','Slip'],
@@ -701,7 +702,8 @@ const STR={
   err_hold_expired:['หมดเวลาทำรายการแล้ว กรุณาจองใหม่อีกครั้ง','Time ran out, please book again'],
   tell_title:['ฝากบอกแอดมินหน่อยนะ','Let the admin know'],
   tell_sub:['คัดลอกข้อความด้านล่างแล้วส่งให้แอดมิน เพื่อให้ตรวจรายการได้เร็วขึ้น','Copy the message below and send it to the admin so they can check your booking faster'],
-  tell_msg:['สวัสดีค่ะ/ครับ 💌 ส่งสลิปในเว็บ RxEvent แล้ว รบกวนช่วยตรวจรายการ {code} ยอด {total} บาทให้หน่อยนะคะ/ครับ ขอบคุณค่ะ/ครับ','Hello 💌 I\u2019ve sent my slip on the RxEvent website. Could you please check booking {code}, amount {total} baht? Thank you!'],
+  tell_msg:['สวัสดีค่ะ/ครับ 💌 ส่งสลิปในเว็บ RxEvent แล้ว รบกวนช่วยตรวจรายการ {code} ยอดบริจาค {total} บาทให้หน่อยนะคะ/ครับ ขอบคุณค่ะ/ครับ','Hello 💌 I\u2019ve sent my slip on the RxEvent website. Could you please check booking {code}, donation {total} baht? Thank you!'],
+  tell_hours:['⏰ แอดมินจะดำเนินรายการในเวลาทำการ 08:00 - 20:00 ของทุกวัน','⏰ Admins process bookings during business hours, 08:00 - 20:00 every day'],
   tell_copy_btn:['📋 คัดลอกข้อความ','📋 Copy message'],
   tell_ig_btn:['เปิดแชท IG','Open IG chat'],
   tell_line_btn:['ส่งผ่าน Line','Send via Line'],
@@ -756,10 +758,10 @@ const STR={
   th_show:['รอบ','Showtime'],
   th_booker:['ผู้จอง','Booked by'],
   th_seats:['ที่นั่ง','Seats'],
-  th_amount:['ยอด','Amount'],
+  th_amount:['ยอดบริจาค','Donation'],
   th_bookedat:['วันเวลาที่จอง','Booked at'],
   adminempty:['ยังไม่มีการจอง','No bookings yet'],
-  admin_summary:['ทั้งหมด {count} รายการ · {total}','{count} bookings total · {total}'],
+  admin_summary:['ทั้งหมด {count} รายการ · เงินร่วมช่วยเหลือทั้งหมด {total}','{count} bookings total · Total contribution {total}'],
   edit_btn:['แก้ไข','Edit'],
   delete_btn:['ลบ','Delete'],
   mf_poster_label:['อัปโหลดรูปโปสเตอร์ (ปรับเป็นสัดส่วน 2:3 อัตโนมัติ)','Upload poster image (auto-resized to 2:3)'],
@@ -779,7 +781,7 @@ const STR={
   edit_save:['บันทึก','Save'],
   ticket_success:['จองสำเร็จ! ได้รับตั๋วหนังแล้ว','Booking confirmed! Your ticket is ready'],
   ticket_seats_prefix:['ที่นั่ง ','Seats '],
-  ticket_total_prefix:['ยอดชำระ ','Total paid '],
+  ticket_total_prefix:['ยอดบริจาค ','Donation '],
   ticket_booked_at:['จองเมื่อ ','Booked at '],
   ticket_pickup:['📍 หากท่านชำระเงินแล้วสามารถรับตั๋วได้ที่ <b>ห้อง 4/1-503 อาคาร 4/1</b> ในวันที่ <b>{date}</b> ตั้งแต่เวลา <b>{time}</b> (30 นาทีก่อนรอบฉายเริ่ม)','📍 If you have paid, you can collect your ticket at <b>Room 4/1-503, Building 4/1</b> on <b>{date}</b> from <b>{time}</b> onward (30 minutes before showtime)'],
   ticket_thanks:['ขอขอบคุณสำหรับการสนับสนุน รายได้ที่ได้จากกิจกรรมในครั้งนี้จะนำไปช่วยเหลือเด็กพิการซ้ำซ้อน ในโครงการเรียนรู้ชีวิตสู่จิตสำนึกเภสัชกรที่ดี','Thank you for your support. Proceeds from this event will help children with multiple disabilities, as part of the \u201cLearning Life Toward Pharmacist Conscience\u201d project'],

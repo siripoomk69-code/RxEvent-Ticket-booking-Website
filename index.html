@@ -365,7 +365,7 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
           <ul class="adminNavList" id="adminNavList">
             <li><a href="#sec-users" data-i18n="admin_users_title">บัญชีผู้ใช้ทั้งหมด</a></li>
             <li><a href="#sec-movies" data-i18n="admin_movies_title">จัดการรอบภาพยนตร์</a></li>
-            <li><a href="#sec-payment" data-i18n="admin_payment_title">ช่องทางการชำระเงิน</a></li>
+            <li><a href="#sec-payment" data-i18n="admin_payment_title">ช่องทางการบริจาค</a></li>
             <li><a href="#sec-contact" data-i18n="admin_contact_title">ช่องทางติดต่อแอดมิน</a></li>
             <li><a href="#sec-seatedit" data-i18n="admin_seatedit_title">จัดการที่นั่งรายรอบ</a></li>
             <li><a href="#sec-byshow" data-i18n="admin_byshow_title">สรุปการจองแยกตามรอบฉาย</a></li>
@@ -386,8 +386,8 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
           <div class="movies" id="movieForms"></div>
           <button class="mini" id="addMovie" type="button" style="margin-top:12px" data-i18n="addmovie_btn">+ เพิ่มรอบฉายใหม่</button>
 
-          <div class="section-title" id="sec-payment" data-i18n="admin_payment_title">ช่องทางการชำระเงิน</div>
-          <p class="sub" style="margin-top:-4px" data-i18n="admin_payment_sub">อัปโหลดรูปภาพช่องทางการชำระเงิน (เช่น QR PromptPay) รูปจะถูกปรับเป็นสัดส่วน 2:3 โดยอัตโนมัติ และจะแสดงในหน้าชำระเงินของผู้จองทันที</p>
+          <div class="section-title" id="sec-payment" data-i18n="admin_payment_title">ช่องทางการบริจาค</div>
+          <p class="sub" style="margin-top:-4px" data-i18n="admin_payment_sub">อัปโหลดรูปภาพช่องทางการบริจาค (เช่น QR PromptPay) รูปจะถูกปรับเป็นสัดส่วน 2:3 โดยอัตโนมัติ และจะแสดงในหน้าบริจาคของผู้จองทันที</p>
           <div class="posterPreview" id="paymentPreview" style="width:150px"></div>
           <div class="field" style="max-width:280px">
             <label for="paymentQrInput" data-i18n="admin_payment_upload_label">อัปโหลดรูปใหม่</label>
@@ -440,7 +440,7 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
             <button class="mini danger" id="clearAll" data-i18n="clearall_btn">ล้างข้อมูลการจองทั้งหมด</button>
           </div>
           <table>
-            <thead><tr><th data-i18n="th_code">รหัส</th><th data-i18n="th_show">รอบ</th><th data-i18n="th_booker">ผู้จอง</th><th data-i18n="th_seats">ที่นั่ง</th><th data-i18n="th_amount">ยอดบริจาค</th><th data-i18n="th_bookedat">วันเวลาที่จอง</th><th data-i18n="th_slip">สลิป</th><th data-i18n="th_paystatus">สถานะการชำระเงิน</th><th></th></tr></thead>
+            <thead><tr><th data-i18n="th_code">รหัส</th><th data-i18n="th_show">รอบ</th><th data-i18n="th_booker">ผู้จอง</th><th data-i18n="th_seats">ที่นั่ง</th><th data-i18n="th_amount">ยอดบริจาค</th><th data-i18n="th_bookedat">วันเวลาที่จอง</th><th data-i18n="th_slip">สลิป</th><th data-i18n="th_paystatus">สถานะการบริจาค</th><th></th></tr></thead>
             <tbody id="adminRows"></tbody>
           </table>
           <p class="empty" id="adminEmpty" hidden data-i18n="adminempty">ยังไม่มีการจอง</p>
@@ -457,22 +457,22 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
 
     <div id="ticketView1">
       <div class="icon">🎟️</div>
-      <p style="margin:2px 0 0;font-weight:700;color:var(--ink)" data-i18n="booking_pending_title">เกือบเสร็จแล้ว! กรุณาชำระเงินเพื่อยืนยันการจอง</p>
+      <p style="margin:2px 0 0;font-weight:700;color:var(--ink)" data-i18n="booking_pending_title">เกือบเสร็จแล้ว! กรุณาบริจาคเพื่อยืนยันการจอง</p>
       <p id="pShow" class="sub" style="margin:8px 0 0"></p>
       <p class="sub" style="margin:0"><span data-i18n="ticket_seats_prefix">ที่นั่ง </span><strong id="pSeats" style="color:var(--ink)"></strong></p>
       <p class="sub" style="margin:0"><span data-i18n="ticket_total_prefix">ยอดบริจาค </span><strong id="pTotal" style="color:var(--ink)"></strong></p>
-      <p class="waitNote" data-i18n="booking_pending_note">ที่นั่งของท่านจะยังไม่ถูกบันทึกจนกว่าจะชำระเงินและอัปโหลดสลิปสำเร็จ หากยังไม่ชำระเงิน จะถือว่าการจองนี้ยังไม่สำเร็จ</p>
+      <p class="waitNote" data-i18n="booking_pending_note">ที่นั่งของท่านจะยังไม่ถูกบันทึกจนกว่าจะบริจาคและอัปโหลดสลิปสำเร็จ หากยังไม่บริจาค จะถือว่าการจองนี้ยังไม่สำเร็จ</p>
       <div class="modalbtns" style="justify-content:center">
-        <button type="button" class="save" id="goPay" data-i18n="pay_go_btn">ชำระเงิน</button>
+        <button type="button" class="save" id="goPay" data-i18n="pay_go_btn">ยืนยันการบริจาค</button>
         <button class="linkbtn" id="ticketClose" data-i18n="close_btn">ปิด</button>
       </div>
-      <p class="holdHint" data-i18n="hold_resume_hint">ปิดหน้านี้ได้ ที่นั่งยังถูกกันไว้ และกลับมาชำระต่อได้ที่ "การจองของฉัน" จนกว่าจะหมดเวลา</p>
+      <p class="holdHint" data-i18n="hold_resume_hint">ปิดหน้านี้ได้ ที่นั่งยังถูกกันไว้ และกลับมายืนยันการบริจาคต่อได้ที่ "การจองของฉัน" จนกว่าจะหมดเวลา</p>
       <button type="button" class="linkbtn" id="holdCancel" style="margin-top:4px" data-i18n="hold_cancel_btn">ยกเลิกรายการนี้</button>
     </div>
 
     <div id="ticketViewPay" hidden>
       <div class="icon">💳</div>
-      <p style="margin:2px 0 0;font-weight:700;color:var(--ink)" data-i18n="pay_title">ชำระเงินผ่าน PromptPay</p>
+      <p style="margin:2px 0 0;font-weight:700;color:var(--ink)" data-i18n="pay_title">บริจาคผ่าน PromptPay</p>
       <p class="sub" style="margin:2px 0 0"><span data-i18n="pay_amount_prefix">ยอดบริจาค </span><strong id="payAmount" style="color:var(--ink)"></strong></p>
       <img class="qrImg" id="qrImgPay" src="/_blob/9460d08263e9ca75723896305ecce297" alt="PromptPay QR">
       <div id="ticketSlipStatus1"></div>
@@ -498,7 +498,7 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
       <div class="icon">🎟️</div>
       <p style="margin:2px 0 0" data-i18n="ticket_success">จองสำเร็จ! ได้รับตั๋วหนังแล้ว</p>
       <div class="pcode" id="pCode3" style="font-size:clamp(20px,6vw,28px)"></div>
-      <p style="margin:10px 0 0;font-weight:700;color:var(--ink)" data-i18n="pay_status_title">สถานะการชำระเงิน</p>
+      <p style="margin:10px 0 0;font-weight:700;color:var(--ink)" data-i18n="pay_status_title">สถานะการบริจาค</p>
       <div id="payStatusText3"></div>
       <p class="pickupNote" id="pPickup3"></p>
       <p class="thanks" data-i18n="ticket_thanks">ขอขอบคุณสำหรับการสนับสนุน รายได้ที่ได้จากกิจกรรมในครั้งนี้จะนำไปช่วยเหลือเด็กพิการซ้ำซ้อน ในโครงการเรียนรู้ชีวิตสู่จิตสำนึกเภสัชกรที่ดี</p>
@@ -682,23 +682,23 @@ const STR={
   msg_admin_seat_cancelled:['ยกเลิกที่นั่ง {id} แล้ว','Seat {id} cancelled'],
   msg_admin_booking_created:['เพิ่มการจองโดยเจ้าหน้าที่แล้ว (รหัส {code})','Staff booking created ({code})'],
   staff_booking_label:['จองโดยเจ้าหน้าที่','Booked by staff'],
-  pay_title:['ชำระเงินผ่าน PromptPay','Pay via PromptPay'],
+  pay_title:['บริจาคผ่าน PromptPay','Donate via PromptPay'],
   pay_amount_prefix:['ยอดบริจาค ','Donation amount '],
   pay_slip_label:['อัปโหลดสลิปการโอนเงิน','Upload transfer slip'],
   msg_slip_uploaded:['อัปโหลดสลิปแล้ว','Slip uploaded'],
   th_slip:['สลิป','Slip'],
   slip_none:['ยังไม่อัปโหลด','Not uploaded yet'],
   pay_upload_btn:['อัปโหลดสลิปการโอนเงิน','Upload transfer slip'],
-  pay_go_btn:['ชำระเงิน','Pay'],
-  booking_pending_title:['เกือบเสร็จแล้ว! กรุณาชำระเงินเพื่อยืนยันการจอง','Almost there! Pay to confirm your booking'],
-  booking_pending_note:['ที่นั่งของท่านจะยังไม่ถูกบันทึกจนกว่าจะชำระเงินและอัปโหลดสลิปสำเร็จ หากยังไม่ชำระเงิน จะถือว่าการจองนี้ยังไม่สำเร็จ','Your seats will not be reserved until payment is completed and the slip is uploaded. If payment is not made, this booking is not yet successful.'],
+  pay_go_btn:['ยืนยันการบริจาค','Confirm donation'],
+  booking_pending_title:['เกือบเสร็จแล้ว! กรุณาบริจาคเพื่อยืนยันการจอง','Almost there! Donate to confirm your booking'],
+  booking_pending_note:['ที่นั่งของท่านจะยังไม่ถูกบันทึกจนกว่าจะบริจาคและอัปโหลดสลิปสำเร็จ หากยังไม่บริจาค จะถือว่าการจองนี้ยังไม่สำเร็จ','Your seats will not be reserved until the donation is completed and the slip is uploaded. If the donation is not made, this booking is not yet successful.'],
   back_btn:['← ย้อนกลับ','← Back'],
   pay_upload_title:['อัปโหลดสลิปการโอนเงิน','Upload transfer slip'],
   cancel_upload_btn:['← ยกเลิกการอัปโหลด','← Cancel upload'],
   hold_timer_label:['⏳ กันที่นั่งไว้ให้ เหลือเวลา','⏳ Seats held for you, time left'],
   hold_extend_hint:['เมื่อแนบสลิป ระบบจะเพิ่มเวลาทำรายการให้อีก 5 นาที','Attaching a slip adds 5 more minutes to finish'],
   msg_hold_extended:['แนบสลิปแล้ว เพิ่มเวลาทำรายการอีก 5 นาที','Slip attached, 5 more minutes added'],
-  msg_hold_expired:['หมดเวลาชำระเงิน ที่นั่งถูกปล่อยกลับเป็นว่างแล้ว กรุณาจองใหม่อีกครั้ง','Payment time ran out. Your seats were released, please book again'],
+  msg_hold_expired:['หมดเวลายืนยันการบริจาค ที่นั่งถูกปล่อยกลับเป็นว่างแล้ว กรุณาจองใหม่อีกครั้ง','Donation time ran out. Your seats were released, please book again'],
   err_hold_expired:['หมดเวลาทำรายการแล้ว กรุณาจองใหม่อีกครั้ง','Time ran out, please book again'],
   tell_title:['ฝากบอกแอดมินหน่อยนะ','Let the admin know'],
   tell_sub:['คัดลอกข้อความด้านล่างแล้วส่งให้แอดมิน เพื่อให้ตรวจรายการได้เร็วขึ้น','Copy the message below and send it to the admin so they can check your booking faster'],
@@ -718,31 +718,31 @@ const STR={
   msg_contact_saved:['บันทึกลิงก์ติดต่อแอดมินแล้ว','Contact links saved'],
   err_contact_url:['ลิงก์ต้องขึ้นต้นด้วย https://','Links must start with https://'],
   err_contact_save:['บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง','Could not save, please try again'],
-  hold_resume_hint:['ปิดหน้านี้ได้ ที่นั่งยังถูกกันไว้ และกลับมาชำระต่อได้ที่ "การจองของฉัน" จนกว่าจะหมดเวลา','You can close this, your seats stay held and you can continue from "My bookings" until time runs out'],
+  hold_resume_hint:['ปิดหน้านี้ได้ ที่นั่งยังถูกกันไว้ และกลับมายืนยันการบริจาคต่อได้ที่ "การจองของฉัน" จนกว่าจะหมดเวลา','You can close this, your seats stay held and you can continue from "My bookings" until time runs out'],
   hold_cancel_btn:['ยกเลิกรายการนี้','Cancel this booking'],
-  confirm_hold_cancel:['ยกเลิกรายการที่รอชำระเงิน และปล่อยที่นั่ง {seats} ใช่ไหม?','Cancel this pending booking and release seats {seats}?'],
+  confirm_hold_cancel:['ยกเลิกรายการที่รอยืนยันการบริจาค และปล่อยที่นั่ง {seats} ใช่ไหม?','Cancel this pending booking and release seats {seats}?'],
   msg_hold_cancelled:['ยกเลิกรายการแล้ว ที่นั่งถูกปล่อยกลับเป็นว่าง','Booking cancelled, seats released'],
-  msg_hold_kept:['ที่นั่งยังถูกกันไว้ กลับมาชำระต่อได้ที่ "การจองของฉัน"','Seats are still held, continue from "My bookings"'],
-  msg_hold_exists:['คุณมีรายการที่รอชำระเงินอยู่ กรุณาทำรายการนั้นให้เสร็จหรือยกเลิกก่อน','You already have a pending booking, finish or cancel it first'],
-  hold_card_title:['รอชำระเงิน','Awaiting payment'],
+  msg_hold_kept:['ที่นั่งยังถูกกันไว้ กลับมายืนยันการบริจาคต่อได้ที่ "การจองของฉัน"','Seats are still held, continue from "My bookings"'],
+  msg_hold_exists:['คุณมีรายการที่รอยืนยันการบริจาคอยู่ กรุณาทำรายการนั้นให้เสร็จหรือยกเลิกก่อน','You already have a pending booking, finish or cancel it first'],
+  hold_card_title:['รอยืนยันการบริจาค','Awaiting donation'],
   hold_card_left:['เหลือเวลา ','Time left '],
   hold_continue_btn:['ทำรายการต่อ','Continue'],
-  pay_status_title:['สถานะการชำระเงิน','Payment status'],
-  status_awaiting_full:['รอตรวจสอบการชำระเงิน','Awaiting payment verification'],
-  status_verified:['ตรวจสอบการชำระเงินแล้ว','Payment verified'],
-  status_problem_prefix:['การชำระเงินมีปัญหา โปรดติดต่อ Instagram: ','Payment issue, please contact Instagram: '],
-  th_paystatus:['สถานะการชำระเงิน','Payment status'],
-  status_opt_awaiting:['รอตรวจสอบการชำระเงิน','Awaiting payment verification'],
-  status_opt_verified:['ตรวจสอบการชำระเงินแล้ว','Payment verified'],
-  status_opt_problem:['การชำระเงินมีปัญหา','Payment issue'],
+  pay_status_title:['สถานะการบริจาค','Donation status'],
+  status_awaiting_full:['รอตรวจสอบการบริจาค','Awaiting donation verification'],
+  status_verified:['ตรวจสอบการบริจาคแล้ว','Donation verified'],
+  status_problem_prefix:['การบริจาคมีปัญหา โปรดติดต่อ Instagram: ','Donation issue, please contact Instagram: '],
+  th_paystatus:['สถานะการบริจาค','Donation status'],
+  status_opt_awaiting:['รอตรวจสอบการบริจาค','Awaiting donation verification'],
+  status_opt_verified:['ตรวจสอบการบริจาคแล้ว','Donation verified'],
+  status_opt_problem:['การบริจาคมีปัญหา','Donation issue'],
   msg_status_updated:['อัปเดตสถานะแล้ว','Status updated'],
   admin_byshow_title:['สรุปการจองแยกตามรอบฉาย','Bookings by showtime'],
   admin_bookings_title:['รายการจองทั้งหมด','All bookings'],
   admin_nav_label:['เมนูจัดการ','Admin menu'],
-  admin_payment_title:['ช่องทางการชำระเงิน','Payment channel'],
-  admin_payment_sub:['อัปโหลดรูปภาพช่องทางการชำระเงิน (เช่น QR PromptPay) รูปจะถูกปรับเป็นสัดส่วน 2:3 โดยอัตโนมัติ และจะแสดงในหน้าชำระเงินของผู้จองทันที','Upload the payment channel image (e.g. a PromptPay QR code). It will be auto-resized to a 2:3 ratio and shown immediately on the booker\u2019s payment screen'],
+  admin_payment_title:['ช่องทางการบริจาค','Donation channel'],
+  admin_payment_sub:['อัปโหลดรูปภาพช่องทางการบริจาค (เช่น QR PromptPay) รูปจะถูกปรับเป็นสัดส่วน 2:3 โดยอัตโนมัติ และจะแสดงในหน้าบริจาคของผู้จองทันที','Upload the donation channel image (e.g. a PromptPay QR code). It will be auto-resized to a 2:3 ratio and shown immediately on the booker\u2019s donation screen'],
   admin_payment_upload_label:['อัปโหลดรูปใหม่','Upload a new image'],
-  msg_payment_qr_updated:['อัปเดตรูปช่องทางการชำระเงินแล้ว','Payment channel image updated'],
+  msg_payment_qr_updated:['อัปเดตรูปช่องทางการบริจาคแล้ว','Donation channel image updated'],
   admin_byshow_sub:['จำนวนที่นั่งที่ถูกจอง จำนวนรายการจอง และรายชื่อที่นั่งของแต่ละรอบ','Seats booked, number of bookings, and the seat list for each showtime'],
   th_seatsbooked:['ที่นั่งที่จองแล้ว','Seats booked'],
   th_bookingcount2:['จำนวนรายการจอง','Bookings'],
@@ -783,7 +783,7 @@ const STR={
   ticket_seats_prefix:['ที่นั่ง ','Seats '],
   ticket_total_prefix:['ยอดบริจาค ','Donation '],
   ticket_booked_at:['จองเมื่อ ','Booked at '],
-  ticket_pickup:['📍 หากท่านชำระเงินแล้วสามารถรับตั๋วได้ที่ <b>ห้อง 4/1-503 อาคาร 4/1</b> ในวันที่ <b>{date}</b> ตั้งแต่เวลา <b>{time}</b> (30 นาทีก่อนรอบฉายเริ่ม)','📍 If you have paid, you can collect your ticket at <b>Room 4/1-503, Building 4/1</b> on <b>{date}</b> from <b>{time}</b> onward (30 minutes before showtime)'],
+  ticket_pickup:['📍 หากท่านบริจาคแล้วสามารถรับตั๋วได้ที่ <b>ห้อง 4/1-503 อาคาร 4/1</b> ในวันที่ <b>{date}</b> ตั้งแต่เวลา <b>{time}</b> (30 นาทีก่อนรอบฉายเริ่ม)','📍 If you have donated, you can collect your ticket at <b>Room 4/1-503, Building 4/1</b> on <b>{date}</b> from <b>{time}</b> onward (30 minutes before showtime)'],
   ticket_thanks:['ขอขอบคุณสำหรับการสนับสนุน รายได้ที่ได้จากกิจกรรมในครั้งนี้จะนำไปช่วยเหลือเด็กพิการซ้ำซ้อน ในโครงการเรียนรู้ชีวิตสู่จิตสำนึกเภสัชกรที่ดี','Thank you for your support. Proceeds from this event will help children with multiple disabilities, as part of the \u201cLearning Life Toward Pharmacist Conscience\u201d project'],
   close_btn:['ปิด','Close'],
   confirm_title:['ยืนยันการทำรายการ','Confirm action'],

@@ -2,7 +2,7 @@ import { and, eq, lt, sql } from 'drizzle-orm'
 import { db } from '../../db/index.js'
 import { documents, locks } from '../../db/schema.js'
 
-const COLLECTIONS = new Set(['movies', 'bookings', 'users', 'meta', 'holds'])
+const COLLECTIONS = new Set(['movies', 'bookings', 'users', 'meta', 'holds', 'cancelled'])
 
 // Seat holds ("in progress" during payment) expire on the server clock so client clock skew can't keep seats locked.
 const HOLD_MIN_MS = 30_000

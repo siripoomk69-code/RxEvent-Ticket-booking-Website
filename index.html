@@ -370,6 +370,7 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
             <li><a href="#sec-seatedit" data-i18n="admin_seatedit_title">จัดการที่นั่งรายรอบ</a></li>
             <li><a href="#sec-byshow" data-i18n="admin_byshow_title">สรุปการจองแยกตามรอบฉาย</a></li>
             <li><a href="#sec-bookings" data-i18n="admin_bookings_title">รายการจองทั้งหมด</a></li>
+            <li><a href="#sec-cancelled" data-i18n="admin_cancelled_title">รายการที่ยกเลิกแล้ว</a></li>
           </ul>
         </nav>
         <div class="adminMain">
@@ -444,6 +445,14 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
             <tbody id="adminRows"></tbody>
           </table>
           <p class="empty" id="adminEmpty" hidden data-i18n="adminempty">ยังไม่มีการจอง</p>
+
+          <div class="section-title" id="sec-cancelled" data-i18n="admin_cancelled_title">รายการที่ยกเลิกแล้ว</div>
+          <p class="sub" style="margin-top:-4px" data-i18n="admin_cancelled_sub">รายการที่ถูกยกเลิกจะถูกเก็บไว้เป็นประวัติ และรหัสการจองจะไม่ถูกนำกลับมาใช้ซ้ำ (จนกว่าจะล้างข้อมูลการจองทั้งหมด)</p>
+          <table>
+            <thead><tr><th data-i18n="th_code">รหัส</th><th data-i18n="th_show">รอบ</th><th data-i18n="th_booker">ผู้จอง</th><th data-i18n="th_seats">ที่นั่ง</th><th data-i18n="th_amount">ยอดบริจาค</th><th data-i18n="th_bookedat">วันเวลาที่จอง</th><th data-i18n="th_cancelledat">วันเวลาที่ยกเลิก</th><th data-i18n="th_cancelledby">ยกเลิกโดย</th></tr></thead>
+            <tbody id="cancelledRows"></tbody>
+          </table>
+          <p class="empty" id="cancelledEmpty" hidden data-i18n="cancelledempty">ยังไม่มีรายการที่ยกเลิก</p>
         </div>
       </div>
     </div>
@@ -761,6 +770,15 @@ const STR={
   th_amount:['ยอดบริจาค','Donation'],
   th_bookedat:['วันเวลาที่จอง','Booked at'],
   adminempty:['ยังไม่มีการจอง','No bookings yet'],
+  admin_cancelled_title:['รายการที่ยกเลิกแล้ว','Cancelled bookings'],
+  admin_cancelled_sub:['รายการที่ถูกยกเลิกจะถูกเก็บไว้เป็นประวัติ และรหัสการจองจะไม่ถูกนำกลับมาใช้ซ้ำ (จนกว่าจะล้างข้อมูลการจองทั้งหมด)','Cancelled bookings are kept as history and their codes are never reused (until all bookings are cleared)'],
+  th_cancelledat:['วันเวลาที่ยกเลิก','Cancelled at'],
+  th_cancelledby:['ยกเลิกโดย','Cancelled by'],
+  cancelledempty:['ยังไม่มีรายการที่ยกเลิก','No cancelled bookings yet'],
+  cancelled_by_user:['ผู้จอง','Booker'],
+  cancelled_by_admin:['แอดมิน','Admin'],
+  cancelled_badge:['ยกเลิกแล้ว','Cancelled'],
+  ticket_cancelled_at:['ยกเลิกเมื่อ ','Cancelled at '],
   admin_summary:['ทั้งหมด {count} รายการ · เงินร่วมช่วยเหลือทั้งหมด {total}','{count} bookings total · Total contribution {total}'],
   edit_btn:['แก้ไข','Edit'],
   delete_btn:['ลบ','Delete'],
@@ -825,7 +843,7 @@ const STR={
   confirm_delete_booking:['{code} — ยืนยันลบการจองนี้?','{code} — confirm deletion of this booking?'],
   msg_booking_deleted:['ลบ {code} แล้ว','Deleted {code}'],
   msg_no_bookings_to_clear:['ยังไม่มีการจองให้ล้าง','There are no bookings to clear'],
-  confirm_clear_all:['ล้างข้อมูลการจองทั้งหมด {count} รายการของทุกคน (บัญชีผู้ใช้จะไม่ถูกลบ)?','Clear all {count} bookings from everyone? (user accounts will not be deleted)'],
+  confirm_clear_all:['ล้างข้อมูลการจองทั้งหมด {count} รายการของทุกคน รวมถึงรายการที่ยกเลิกแล้ว และรีเซ็ตรหัสการจองกลับไปเริ่มที่ PD-001 (บัญชีผู้ใช้จะไม่ถูกลบ)?','Clear all {count} bookings from everyone, including cancelled ones, and reset booking codes back to PD-001? (user accounts will not be deleted)'],
   msg_cleared_all:['ล้างข้อมูลการจองทั้งหมดแล้ว','All bookings cleared'],
   err_clear_partial:['ล้างข้อมูลไม่สำเร็จบางส่วน กรุณาลองใหม่','Some bookings failed to clear, please try again'],
   err_seat_format:['รูปแบบที่นั่งไม่ถูกต้อง เช่น A1,B12','Invalid seat format, e.g. A1,B12'],
@@ -860,7 +878,7 @@ function applyStaticI18n(){
   if(lt)lt.textContent=LANG==='en'?'TH':'EN';
 }
 
-let db=null,auth=null,assetsCap=null,bookings={},users={},holds={},sel=new Set(),currentShow=null;
+let db=null,auth=null,assetsCap=null,bookings={},cancelled={},users={},holds={},sel=new Set(),currentShow=null;
 // Seats are held for a fixed 10 minutes once booking starts; attaching a slip adds 5 more minutes (once).
 const HOLD_TTL_MS=10*60_000,HOLD_EXTEND_MS=5*60_000;
 const newHoldId=()=>'h-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);
@@ -1560,7 +1578,8 @@ function renderUser(){
     mineEl.appendChild(hc);
     tickHold();
   }
-  if(!mine.length&&!(holdActive&&pendingSeats.length)){mineEl.innerHTML=`<p class="empty">${T('mybookings_empty')}</p>`}
+  const mineCancelled=Object.entries(cancelled).filter(([,b])=>b.userKey===auth.key).sort((a,b)=>a[0]<b[0]?1:-1);
+  if(!mine.length&&!mineCancelled.length&&!(holdActive&&pendingSeats.length)){mineEl.innerHTML=`<p class="empty">${T('mybookings_empty')}</p>`}
   mine.forEach(([code,b])=>{
     const card=document.createElement('div');card.className='card';
     const slip=b.slipId?`<div style="margin-top:8px">${paymentStatusHTML(b)}<img class="slipThumb" src="/_blob/${esc(b.slipId)}" alt=""></div>`:'';
@@ -1575,6 +1594,11 @@ function renderUser(){
     }
     tools.appendChild(cancel);
     card.appendChild(tools);
+    mineEl.appendChild(card);
+  });
+  mineCancelled.forEach(([code,b])=>{
+    const card=document.createElement('div');card.className='card';card.style.opacity='.6';
+    card.innerHTML=`<div><span class="code2" style="text-decoration:line-through">${esc(code)}</span> <span class="meta">· ${esc(T('cancelled_badge'))}</span><div class="meta">${showLabel(findShow(b.show))} · ${T('ticket_seats_prefix')}${esc((b.seats||[]).join(', '))} · ${T('baht_value',{n:num(b.total||0)})}<br>${T('ticket_cancelled_at')}${fmtDate(b.cancelledAt)}</div></div>`;
     mineEl.appendChild(card);
   });
 }
@@ -1602,11 +1626,16 @@ async function createBooking(show,seats,meta){
     const held=pendingMap(show);
     const pending=seats.filter(s=>held[s]);
     if(pending.length)return {pending};
-    let n=0;Object.keys(cur).forEach(k=>{n=Math.max(n,parseInt(k.slice(3),10)||0)});
+    // Codes only move forward: cancelled bookings and the stored counter keep their numbers reserved until "clear all".
+    const [cSnap,seqDoc]=await Promise.all([db.collection('cancelled').get(),db.doc('meta/bookingSeq').get()]);
+    const cc={};cSnap.docs.forEach(d=>cc[d.id]=d.data());cancelled=cc;
+    let n=Number(seqDoc.exists&&seqDoc.data()&&seqDoc.data().last)||0;
+    [...Object.keys(cur),...Object.keys(cc)].forEach(k=>{n=Math.max(n,parseInt(k.slice(3),10)||0)});
     n++;if(n>999)return {full:true};
     const code='PD-'+pad(n);
     const data={seats,total:seats.length*PRICE,show,at:Date.now(),...meta};
     await db.doc('bookings/'+code).set(data);
+    await db.doc('meta/bookingSeq').set({last:n});
     bookings={...cur,[code]:data};
     if(holdActive){holdActive=false;stopHoldCountdown();delete holds[myHoldId];await db.doc('holds/'+myHoldId).delete().catch(e=>console.error(e))}
     return {code,data};
@@ -1634,9 +1663,15 @@ $('book').addEventListener('click',async()=>{
   renderUser();
 });
 
+// Moves a booking into the "cancelled" history instead of erasing it, so its code is never handed out again.
+async function archiveBooking(code,by){
+  const b=bookings[code];
+  if(b)await db.doc('cancelled/'+code).set({...b,cancelledAt:Date.now(),cancelledBy:by});
+  await db.doc('bookings/'+code).delete();
+}
 async function cancelBooking(code){
   if(!await showConfirm(T('confirm_cancel_booking',{code})))return;
-  try{await db.doc('bookings/'+code).delete();showToast(T('msg_booking_cancelled',{code}))}catch(e){console.error(e);showToast(T('err_cancel_failed'))}
+  try{await archiveBooking(code,'user');showToast(T('msg_booking_cancelled',{code}))}catch(e){console.error(e);showToast(T('err_cancel_failed'))}
 }
 
 function renderUsers(){
@@ -1695,12 +1730,25 @@ function renderAdmin(){
     const edit=document.createElement('button');edit.className='mini';edit.textContent=T('edit_btn');
     edit.addEventListener('click',()=>openEdit(code,b));
     const del=document.createElement('button');del.className='mini danger';del.textContent=T('delete_btn');
-    del.addEventListener('click',async()=>{if(await showConfirm(T('confirm_delete_booking',{code}))){try{await db.doc('bookings/'+code).delete();showToast(T('msg_booking_deleted',{code}))}catch(e){showToast(T('err_delete_failed'))}}});
+    del.addEventListener('click',async()=>{if(await showConfirm(T('confirm_delete_booking',{code}))){try{await archiveBooking(code,'admin');showToast(T('msg_booking_deleted',{code}))}catch(e){showToast(T('err_delete_failed'))}}});
     td.append(edit,del);tr.appendChild(td);
     tb.appendChild(tr);
   });
   renderByShow();
   renderAdminSeats();
+  renderCancelled();
+}
+
+function renderCancelled(){
+  if(!auth||auth.role!=='admin')return;
+  const rows=Object.entries(cancelled).sort((a,b)=>a[0]<b[0]?1:-1);
+  const tb=$('cancelledRows');tb.innerHTML='';
+  $('cancelledEmpty').hidden=!!rows.length;
+  rows.forEach(([code,b])=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><b>${esc(code)}</b></td><td>${showLabel(findShow(b.show))}</td><td>${b.staffBooking?T('staff_booking_label'):esc(b.username||'-')}</td><td>${esc((b.seats||[]).join(', '))}</td><td>${num(b.total||0)}</td><td>${fmtDate(b.at)}</td><td>${fmtDate(b.cancelledAt)}</td><td>${T(b.cancelledBy==='admin'?'cancelled_by_admin':'cancelled_by_user')}</td>`;
+    tb.appendChild(tr);
+  });
 }
 
 function adminToggleSeat(id){
@@ -1717,7 +1765,7 @@ async function adminCancelSeat(id,code){
   if(!await showConfirm(T('confirm_admin_cancel_seat',{id,code})))return;
   try{
     if(b.seats.length<=1){
-      await db.doc('bookings/'+code).delete();
+      await archiveBooking(code,'admin');
     }else{
       await db.doc('bookings/'+code).update({seats:b.seats.filter(s=>s!==id),total:(b.seats.length-1)*PRICE});
     }
@@ -1778,12 +1826,13 @@ function renderByShow(){
 }
 
 $('clearAll').addEventListener('click',async()=>{
-  const codes=Object.keys(bookings);
-  if(!codes.length){showToast(T('msg_no_bookings_to_clear'));return}
+  const codes=Object.keys(bookings),ccodes=Object.keys(cancelled);
+  if(!codes.length&&!ccodes.length){showToast(T('msg_no_bookings_to_clear'));return}
   if(!await showConfirm(T('confirm_clear_all',{count:codes.length})))return;
   $('clearAll').disabled=true;$('clearAll').textContent=T('clearall_busy');
   try{
-    await Promise.all(codes.map(c=>db.doc('bookings/'+c).delete()));
+    await Promise.all([...codes.map(c=>db.doc('bookings/'+c).delete()),...ccodes.map(c=>db.doc('cancelled/'+c).delete())]);
+    await db.doc('meta/bookingSeq').delete();
     showToast(T('msg_cleared_all'));
   }catch(e){console.error(e);showToast(T('err_clear_partial'))}
   finally{$('clearAll').disabled=false;$('clearAll').textContent=T('clearall_btn')}
@@ -2004,6 +2053,10 @@ document.addEventListener('change',e=>{
   db.collection('bookings').onSnapshot(s=>{
     const b={};s.docs.forEach(d=>b[d.id]=d.data());bookings=b;
     if(!$('app').hidden){if(auth&&auth.role==='admin'){renderAdmin();renderUsers()}else renderUser()}
+  },e=>console.error(e));
+  db.collection('cancelled').onSnapshot(s=>{
+    const c={};s.docs.forEach(d=>c[d.id]=d.data());cancelled=c;
+    if(!$('app').hidden){if(auth&&auth.role==='admin')renderCancelled();else renderUser()}
   },e=>console.error(e));
   db.collection('holds').onSnapshot(s=>{
     const h={};s.docs.forEach(d=>h[d.id]=d.data());holds=h;

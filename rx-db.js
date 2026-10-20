@@ -1,7 +1,7 @@
 // Netlify-backed replacement for the `claude.use('db')` / `claude.use('assets')` storage API.
 // Data lives in Netlify Database (via /api/db), images in Netlify Blobs (via /api/assets).
 // v2: adaptive polling (backs off when nothing changes / user is idle / tab hidden),
-//     per-listener intervals, and writes only refresh the listeners they affect.
+//     per-listener intervals, and writes only refresh the listeners they affect./
 (function(){
   if(window.claude&&typeof window.claude.use==='function')return;
   const DEFAULT_BASE_MS=5000;      // fastest poll for a listener that keeps seeing changes

@@ -549,13 +549,13 @@ body.halloween .bgDecor span{position:absolute;opacity:.13;filter:drop-shadow(0 
 
 <script src="/rx-db.js"></script>
 <script>
-const ROW_DEF=[['A',24],['B',24],['C',24],['D',24],['E',24],['F',24],['G',24],['H',24],['I',24],['J',24],['K',16],['L',16]];
+const ROW_DEF=[['A',24],['B',24],['C',24],['D',24],['E',24],['F',24],['G',24],['H',24],['I',24],['J',24],['K',16],['L',16],['M',16]];
 const ROWS=ROW_DEF.map(r=>r[0]);
 const TOTAL_SEATS=ROW_DEF.reduce((s,r)=>s+r[1],0);
 const PRICE=29;
 function rowSeatCount(label){const d=ROW_DEF.find(r=>r[0]===label);return d?d[1]:0}
 function isValidSeatId(id){
-  const m=/^([A-L])(\d{1,2})$/.exec(id);
+  const m=/^([A-M])(\d{1,2})$/.exec(id);
   if(!m)return false;
   const n=+m[2];
   return n>=1&&n<=rowSeatCount(m[1]);
@@ -878,6 +878,7 @@ function applyStaticI18n(){
   if(lt)lt.textContent=LANG==='en'?'TH':'EN';
 }
 
+const releasedHoldIds=new Set();
 let db=null,auth=null,assetsCap=null,bookings={},cancelled={},users={},holds={},sel=new Set(),currentShow=null;
 // Seats are held for a fixed 10 minutes once booking starts; attaching a slip adds 5 more minutes (once).
 const HOLD_TTL_MS=10*60_000,HOLD_EXTEND_MS=5*60_000;
@@ -1141,6 +1142,7 @@ $('showSwitch').addEventListener('change',e=>switchShow(e.target.value));
 try{auth=JSON.parse(localStorage.getItem(LKEY)||'null')}catch(e){}
 
 function showApp(){
+  if(window.syncAdminListeners)syncAdminListeners();
   $('login').hidden=true;$('movieSelect').hidden=true;$('app').hidden=false;
   document.body.classList.add('halloween');
   $('guestLogin').hidden=!!auth;
@@ -1438,6 +1440,7 @@ $('logout').addEventListener('click',()=>{
   holdActive=false;stopHoldCountdown();pendingSeats=[];myHoldId=newHoldId();
   $('ticketPopup').hidden=true;$('tellAdminPopup').hidden=true;
   auth=null;try{localStorage.removeItem(LKEY)}catch(e){}
+  if(window.syncAdminListeners)syncAdminListeners();
   $('app').hidden=true;$('login').hidden=true;$('movieSelect').hidden=false;$('guestLogin').hidden=false;
   [...movieGrid.children].forEach(t=>t.classList.remove('active'));
   $('uname').value='';$('upin').value='';$('tagline').textContent=T('tagline_default');
@@ -1455,7 +1458,7 @@ function holdData(){return {show:pendingShow,seats:pendingSeats,userKey:auth&&au
 function adoptOwnHold(){
   if(holdActive||!auth||auth.role==='admin')return;
   const now=Date.now();
-  const own=Object.entries(holds).find(([,h])=>h.userKey===auth.key&&Number(h.expiresAt)>now&&(h.seats||[]).length);
+  const own=Object.entries(holds).find(([hid,h])=>!releasedHoldIds.has(hid)&&h.userKey===auth.key&&Number(h.expiresAt)>now&&(h.seats||[]).length);
   if(!own)return;
   const [id,h]=own;
   myHoldId=id;pendingShow=h.show;pendingSeats=h.seats.slice();
@@ -1522,6 +1525,7 @@ function releaseHold(){
   stopHoldCountdown();
   if(!holdActive)return;
   holdActive=false;
+  releasedHoldIds.add(myHoldId);
   delete holds[myHoldId];
   if(db)db.doc('holds/'+myHoldId).delete().catch(e=>console.error(e));
 }
@@ -2050,35 +2054,50 @@ document.addEventListener('change',e=>{
   try{db=await claude.use('db')}catch(e){db=null}
   if(!db){$('dbstate').textContent=T('err_db_connect_failed');return}
   try{assetsCap=await claude.use('assets')}catch(e){assetsCap=null}
+  // users: admin only (never sent to guests/regular users).
+  // cancelled: any logged-in user needs their own history, so it stays for everyone but polls slowly for non-admins.
+  let usersUnsub=null,cancelledUnsub=null,cancelledRole=null;
+  window.syncAdminListeners=()=>{
+    const role=db&&auth?auth.role:null;
+    if(role==='admin'&&!usersUnsub){
+      usersUnsub=db.collection('users').onSnapshot(s=>{
+        const u={};s.docs.forEach(d=>{u[d.id]=d.data()});users=u;
+        if(auth&&auth.role==='admin'&&!$('app').hidden)renderUsers();
+      },e=>console.error(e),{base:15000,max:60000});
+    }else if(role!=='admin'&&usersUnsub){usersUnsub();usersUnsub=null;users={}}
+    if(role!==cancelledRole){
+      if(cancelledUnsub){cancelledUnsub();cancelledUnsub=null}
+      cancelledRole=role;
+      if(role){
+        cancelledUnsub=db.collection('cancelled').onSnapshot(s=>{
+          const c={};s.docs.forEach(d=>c[d.id]=d.data());cancelled=c;
+          if(!$('app').hidden){if(auth&&auth.role==='admin')renderCancelled();else renderUser()}
+        },e=>console.error(e),role==='admin'?{base:15000,max:60000}:{base:30000,max:120000});
+      }else cancelled={};
+    }
+  };
+  syncAdminListeners();
   db.collection('bookings').onSnapshot(s=>{
     const b={};s.docs.forEach(d=>b[d.id]=d.data());bookings=b;
     if(!$('app').hidden){if(auth&&auth.role==='admin'){renderAdmin();renderUsers()}else renderUser()}
-  },e=>console.error(e));
-  db.collection('cancelled').onSnapshot(s=>{
-    const c={};s.docs.forEach(d=>c[d.id]=d.data());cancelled=c;
-    if(!$('app').hidden){if(auth&&auth.role==='admin')renderCancelled();else renderUser()}
-  },e=>console.error(e));
+  },e=>console.error(e),{base:5000,max:30000});
   db.collection('holds').onSnapshot(s=>{
     const h={};s.docs.forEach(d=>h[d.id]=d.data());holds=h;
     if(!$('app').hidden){if(auth&&auth.role==='admin')renderAdminSeats();else renderUser()}
-  },e=>console.error(e));
-  db.collection('users').onSnapshot(s=>{
-    const u={};s.docs.forEach(d=>{u[d.id]=d.data()});users=u;
-    if(auth&&auth.role==='admin'&&!$('app').hidden)renderUsers();
-  },e=>console.error(e));
+  },e=>console.error(e),{base:4000,max:30000});
   db.doc('meta/payment').onSnapshot(doc=>{
     if(doc&&doc.exists){
       const data=doc.data();
       if(data&&data.qrId){paymentQrId=data.qrId;applyQrImages()}
     }
-  },e=>console.error(e));
+  },e=>console.error(e),{base:60000,max:300000});
   db.doc('meta/contact').onSnapshot(doc=>{
     if(doc&&doc.exists){
       const data=doc.data()||{};
       contactLinks={igUrl:data.igUrl||'',lineUrl:data.lineUrl||''};
       applyContactLinks();
     }
-  },e=>console.error(e));
+  },e=>console.error(e),{base:60000,max:300000});
   let moviesSeeded=false;
   db.collection('movies').onSnapshot(s=>{
     if(!s.docs.length){
@@ -2097,7 +2116,7 @@ document.addEventListener('change',e=>{
     if(!$('app').hidden){
       if(auth&&auth.role==='admin'){renderAdmin();renderMovieForms();renderUsers()}else renderUser();
     }
-  },e=>console.error(e));
+  },e=>console.error(e),{base:30000,max:120000});
 })();
 </script>
 </body>
